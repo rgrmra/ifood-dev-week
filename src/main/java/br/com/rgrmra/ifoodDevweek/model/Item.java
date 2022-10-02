@@ -23,12 +23,4 @@ public class Item {
     @ManyToOne
     @JsonIgnore
     private Sacola sacola;
-
-
-    public static void main(String[] args) {
-        int[] a = {1,2};
-        for (int i = 0 ; i < a.length; i++) {
-
-        }
-    }
 }
