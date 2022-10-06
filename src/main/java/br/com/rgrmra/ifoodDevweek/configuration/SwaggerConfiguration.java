@@ -2,6 +2,7 @@ package br.com.rgrmra.ifoodDevweek.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -9,6 +10,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
+@EnableWebMvc
 public class SwaggerConfiguration {
     @Bean
     public Docket getBean() {
@@ -20,8 +22,11 @@ public class SwaggerConfiguration {
 
     public ApiInfo getInfo() {
         return new ApiInfoBuilder()
-                .title("Sacola API Info")
-                .description("Sacola API para Servir uma Aplicação de Delivery")
+                .title("Ifood Dev Week Project")
+                .description("API para Servir uma Aplicação de Delivery.<br>" +
+                        "Está aplicação contém as funcionalidades básicas, porém, necessárias para o funcionamento " +
+                        "de uma aplicação de delivery.")
+                .version("1.0.0")
                 .build();
     }
 }
