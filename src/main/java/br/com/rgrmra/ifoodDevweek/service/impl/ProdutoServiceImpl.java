@@ -34,6 +34,22 @@ public class ProdutoServiceImpl implements ProdutoService {
                 }
         );
     }
+
+    @Override
+    public String verNomeProduto(Long id) {
+        return verProduto(id).getNome();
+    }
+
+    @Override
+    public double verValorUnitarioProduto(Long id) {
+        return verProduto(id).getValorUnitario();
+    }
+
+    @Override
+    public boolean verDisponibilidadeProduto(Long id) {
+        return verProduto(id).isDisponivel();
+    }
+
     @Override
     public Restaurante verRestauranteProduto(Long id) {
         return verProduto(id).getRestaurante();
@@ -46,6 +62,34 @@ public class ProdutoServiceImpl implements ProdutoService {
         produto.setValorUnitario(produtoDto.getValorUnitario());
         produto.setDisponivel(produtoDto.isDisponivel());
         produto.setRestaurante(restauranteService.verRestaurante(produtoDto.getRestauranteId()));
+        return produtoRepository.save(produto);
+    }
+
+    @Override
+    public Produto atualizarNomeProduto(Long id, String nome) {
+        Produto produto = verProduto(id);
+        produto.setNome(nome);
+        return produtoRepository.save(produto);
+    }
+
+    @Override
+    public Produto atualizarValorUnitarioProduto(Long id, double valorUnitario) {
+        Produto produto = verProduto(id);
+        produto.setValorUnitario(valorUnitario);
+        return produtoRepository.save(produto);
+    }
+
+    @Override
+    public Produto atualizarDisponibilidadeProduto(Long id, boolean disponivel) {
+        Produto produto = verProduto(id);
+        produto.setDisponivel(disponivel);
+        return produtoRepository.save(produto);
+    }
+
+    @Override
+    public Produto atualizarResturantePorduto(Long id, Long restauranteId) {
+        Produto produto = verProduto(id);
+        produto.setRestaurante(restauranteService.verRestaurante(id));
         return produtoRepository.save(produto);
     }
 

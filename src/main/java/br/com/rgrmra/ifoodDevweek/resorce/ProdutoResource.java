@@ -25,6 +25,21 @@ public class ProdutoResource {
         return produtoService.verProduto(id);
     }
 
+    @GetMapping("/{id}/nome")
+    public String verNomeProduto(@PathVariable("id") Long id) {
+        return produtoService.verNomeProduto(id);
+    }
+
+    @GetMapping("/{id}/valor")
+    public double verValorUnitarioProduto(@PathVariable("id") Long id) {
+        return produtoService.verValorUnitarioProduto(id);
+    }
+
+    @GetMapping("/{id}/disponibilidade")
+    public boolean verDisponibilidadeProduto(@PathVariable("id") Long id) {
+        return produtoService.verDisponibilidadeProduto(id);
+    }
+
     @GetMapping("/{id}/restaurante")
     public Restaurante verRestauranteProduto(@PathVariable("id") Long id) {
         return produtoService.verRestauranteProduto(id);
@@ -33,6 +48,26 @@ public class ProdutoResource {
     @PutMapping("/{id}/atualizar")
     public Produto atualizarProduto(@PathVariable("id") Long id, @RequestBody ProdutoDto produtoDto) {
         return produtoService.atualizarProduto(id, produtoDto);
+    }
+
+    @PatchMapping("/{id}/atualizar-nome")
+    public Produto atualizarNomeProduto(@PathVariable("id") Long id, @RequestBody String nome) {
+        return produtoService.atualizarNomeProduto(id, nome);
+    }
+
+    @PatchMapping("/{id}/atualizar-valor")
+    public Produto atualizarValorUnitarioProduto(@PathVariable("id") Long id, double valorUnitario) {
+        return produtoService.atualizarValorUnitarioProduto(id, valorUnitario);
+    }
+
+    @PatchMapping("/{id}/atualizar-disponibilidade")
+    public Produto atualizarDisponibilidadeProduto(@PathVariable("id") Long id, boolean disponivel) {
+        return produtoService.atualizarDisponibilidadeProduto(id, disponivel);
+    }
+
+    @PatchMapping("/{id}/atualizar-restaurante")
+    public Produto atualizarRestauranteProduto(@PathVariable("id") Long id, Long restauranteId) {
+        return produtoService.atualizarResturantePorduto(id, restauranteId);
     }
 
     @DeleteMapping("/{id}/deletar")
