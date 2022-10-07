@@ -18,6 +18,11 @@ import java.util.List;
 public class RestauranteResource {
     private final RestauranteService restauranteService;
 
+    @GetMapping
+    public List<Restaurante> verRestaurantes() {
+        return restauranteService.verRestaurantes();
+    }
+
     @PostMapping()
     public Restaurante adicionarRestaurante(RestauranteDto restauranteDto) {
         return restauranteService.adicionarRestaurante(restauranteDto);

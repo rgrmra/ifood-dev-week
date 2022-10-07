@@ -21,6 +21,11 @@ public class RestauranteServiceImpl implements RestauranteService {
     private final ProdutoRepository produtoRepository;
 
     @Override
+    public List<Restaurante> verRestaurantes() {
+        return restauranteRepository.findAll();
+    }
+
+    @Override
     public Restaurante adicionarRestaurante(RestauranteDto restauranteDto) {
         return restauranteRepository.save(Restaurante.builder()
                 .nome(restauranteDto.getNome())

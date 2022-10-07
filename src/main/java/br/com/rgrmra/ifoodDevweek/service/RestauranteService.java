@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface RestauranteService {
 
+    List<Restaurante> verRestaurantes();
     Restaurante adicionarRestaurante(RestauranteDto restauranteDto);
     Restaurante verRestaurante(Long id);
     String verNomeRestaurante(Long id);
