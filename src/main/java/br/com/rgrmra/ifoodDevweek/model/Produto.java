@@ -16,7 +16,8 @@ import java.math.BigDecimal;
 @Entity
 public class Produto {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ProdutoId")
+    @SequenceGenerator(name = "ProdutoId", sequenceName = "PRODUTO_ID")
     private long id;
     private String nome;
     private double valorUnitario;

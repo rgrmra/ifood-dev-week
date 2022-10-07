@@ -14,7 +14,8 @@ import javax.persistence.*;
 @Entity
 public class Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ClienteId")
+    @SequenceGenerator(name = "ClienteId", sequenceName = "CLIENTE_ID")
     private long id;
     private String nome;
     @Embedded

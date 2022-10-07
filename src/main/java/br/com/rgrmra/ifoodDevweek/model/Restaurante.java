@@ -16,7 +16,8 @@ import java.util.List;
 @Entity
 public class Restaurante {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RestauranteId")
+    @SequenceGenerator(name = "RestauranteId", sequenceName = "RESTAURANTE_ID")
     private long id;
     private String nome;
     @OneToMany(cascade = CascadeType.ALL)

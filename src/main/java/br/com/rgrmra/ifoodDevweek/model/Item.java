@@ -15,7 +15,8 @@ import javax.persistence.*;
 @Entity
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ItemId")
+    @SequenceGenerator(name = "ItemId", sequenceName = "ITEM_ID")
     private long id;
     @OneToOne
     private Produto produto;

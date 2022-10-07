@@ -17,7 +17,8 @@ import java.util.List;
 @Entity
 public class Sacola {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SacolaId")
+    @SequenceGenerator(name = "SacolaId", sequenceName = "SACOLA_ID")
     private long id;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
