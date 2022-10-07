@@ -22,10 +22,10 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Override
     public Restaurante adicionarRestaurante(RestauranteDto restauranteDto) {
-        Restaurante restaurante = new Restaurante();
-        restaurante.setNome(restauranteDto.getNome());
-        restaurante.setEndereco(restauranteDto.getEndereco());
-        return restauranteRepository.save(restaurante);
+        return restauranteRepository.save(Restaurante.builder()
+                .nome(restauranteDto.getNome())
+                .endereco(restauranteDto.getEndereco())
+                .build());
     }
 
     @Override
@@ -84,11 +84,6 @@ public class RestauranteServiceImpl implements RestauranteService {
     @Override
     public void deletarRestaurante(Long id) {
         restauranteRepository.deleteById(id);
-        List<Produto> listaProdutos = produtoRepository.findAll();
-        for (Produto produto : listaProdutos) {
-            if (produto.getId() == id) {
-                produtoRepository.deleteById(produto.getId());
-            }
-        }
+        produtoRepository.findAll().removeIf(produto -> (produto.getId() == id));
     }
 }

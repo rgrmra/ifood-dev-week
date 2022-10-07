@@ -21,30 +21,29 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Produto adicionarProduto(ProdutoDto produtoDto) {
-        Produto produto = new Produto();
-        produto.setNome(produtoDto.getNome());
-        produto.setValorUnitario(produtoDto.getValorUnitario());
-        produto.setDisponivel(produtoDto.isDisponivel());
-        produto.setRestaurante(restauranteRepository.findById(produtoDto.getRestauranteId()).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Restaurante não existe!");
-                }
-        ));
-
-        return atualizarListaRestaurante(produtoRepository.save(produto));
+        return atualizarListaRestaurante(produtoRepository.save(Produto.builder()
+                .nome(produtoDto.getNome())
+                .valorUnitario(produtoDto.getValorUnitario())
+                .disponivel(produtoDto.isDisponivel())
+                .restaurante(encontrarRestaurante(produtoDto.getRestauranteId()))
+                .build()));
     }
 
     private Produto atualizarListaRestaurante(Produto produtoNovo) {
-        Restaurante restaurante = restauranteRepository.findById(produtoNovo.getRestaurante().getId()).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Restaurante não existe");
-                }
-        );
+        Restaurante restaurante = encontrarRestaurante(produtoNovo.getRestaurante().getId());
         List<Produto> listaProdutos = produtoRepository.findAll();
         listaProdutos.removeIf(produto -> !produto.getRestaurante().equals(restaurante));
         restaurante.setProdutos(listaProdutos);
         restauranteRepository.save(restaurante);
         return produtoNovo;
+    }
+
+    private Restaurante encontrarRestaurante(Long id) {
+        return restauranteRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Restaurante não existe!");
+                }
+        );
     }
 
     @Override
@@ -89,12 +88,7 @@ public class ProdutoServiceImpl implements ProdutoService {
         produto.setNome(produtoDto.getNome());
         produto.setValorUnitario(produtoDto.getValorUnitario());
         produto.setDisponivel(produtoDto.isDisponivel());
-        produto.setRestaurante(restauranteRepository.findById(produtoDto.getRestauranteId()).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Restaurante não existe!");
-                }
-        ));
-
+        produto.setRestaurante(encontrarRestaurante(produtoDto.getRestauranteId()));
         return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
@@ -102,7 +96,6 @@ public class ProdutoServiceImpl implements ProdutoService {
     public Produto atualizarNomeProduto(Long id, String nome) {
         Produto produto = verProduto(id);
         produto.setNome(nome);
-
         return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
@@ -123,21 +116,14 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     public Produto atualizarResturantePorduto(Long id, Long restauranteId) {
         Produto produto = verProduto(id);
-        produto.setRestaurante(restauranteRepository.findById(restauranteId).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Restaurante não existe!");
-                }
-        ));
+        produto.setRestaurante(encontrarRestaurante(restauranteId));
         return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
     @Override
     public void deletarProduto(Long id) {
-        Produto produto = verProduto(id);
-        Restaurante restaurante = restauranteRepository.findById(produto.getRestaurante().getId()).orElseThrow();
-        List<Produto> listaProdutos = restaurante.getProdutos();
-        listaProdutos.remove(produto);
-        restaurante.setProdutos(listaProdutos);
+        Restaurante restaurante = encontrarRestaurante(verProduto(id).getId());
+        restaurante.getProdutos().removeIf(produto -> produto.equals(verProduto(id)));
         restauranteRepository.save(restaurante);
         produtoRepository.deleteById(id);
     }

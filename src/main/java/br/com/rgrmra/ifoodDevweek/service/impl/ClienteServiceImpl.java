@@ -2,24 +2,29 @@ package br.com.rgrmra.ifoodDevweek.service.impl;
 
 import br.com.rgrmra.ifoodDevweek.model.Cliente;
 import br.com.rgrmra.ifoodDevweek.model.Endereco;
+import br.com.rgrmra.ifoodDevweek.model.Sacola;
 import br.com.rgrmra.ifoodDevweek.repository.ClienteRepository;
+import br.com.rgrmra.ifoodDevweek.repository.SacolaRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ClienteDto;
 import br.com.rgrmra.ifoodDevweek.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final SacolaRepository sacolaRepository;
 
     @Override
     public Cliente adicionarCliente(ClienteDto clienteDto) {
-        Cliente cliente = new Cliente();
-        cliente.setNome(clienteDto.getNome());
-        cliente.setEndereco(clienteDto.getEndereco());
-        return clienteRepository.save(cliente);
+        return clienteRepository.save(Cliente.builder()
+                .nome(clienteDto.getNome())
+                .endereco(clienteDto.getEndereco())
+                .build());
     }
 
     @Override
@@ -65,6 +70,7 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public void deletarCliente(Long id) {
+        sacolaRepository.findAll().removeIf(sacola -> (sacola.getCliente().getId() == id));
         clienteRepository.deleteById(id);
     }
 }

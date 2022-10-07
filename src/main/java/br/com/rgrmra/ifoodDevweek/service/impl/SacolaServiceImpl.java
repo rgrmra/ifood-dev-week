@@ -145,7 +145,6 @@ public class SacolaServiceImpl implements SacolaService {
 
     @Override
     public void deletarSacola(Long id) {
-        Sacola sacola = verSacola(id);
-        sacolaRepository.delete(sacola);
+        sacolaRepository.delete(verSacola(id));
     }
 }
