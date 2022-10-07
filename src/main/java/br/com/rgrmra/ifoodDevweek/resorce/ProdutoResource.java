@@ -8,6 +8,8 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Api(value="/ifood-dev-week/produtos")
 @RestController
 @RequestMapping("/ifood-dev-week/produtos")
@@ -43,6 +45,11 @@ public class ProdutoResource {
     @GetMapping("/{id}/restaurante")
     public Restaurante verRestauranteProduto(@PathVariable("id") Long id) {
         return produtoService.verRestauranteProduto(id);
+    }
+
+    @GetMapping("/pesquisar/{nome}")
+    public List<Produto> pesquisarRestaurante(@PathVariable("nome") String nome) {
+        return produtoService.pesquisarProduto(nome);
     }
 
     @PutMapping("/{id}/atualizar")

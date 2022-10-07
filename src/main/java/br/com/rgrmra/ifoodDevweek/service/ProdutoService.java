@@ -4,6 +4,8 @@ import br.com.rgrmra.ifoodDevweek.model.Produto;
 import br.com.rgrmra.ifoodDevweek.model.Restaurante;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ProdutoDto;
 
+import java.util.List;
+
 public interface ProdutoService {
 
     Produto adicionarProduto(ProdutoDto produtoDto);
@@ -12,6 +14,7 @@ public interface ProdutoService {
     double verValorUnitarioProduto(Long id);
     boolean verDisponibilidadeProduto(Long id);
     Restaurante verRestauranteProduto(Long id);
+    List<Produto> pesquisarProduto(String nome);
     Produto atualizarProduto(Long id, ProdutoDto produtoDto);
     Produto atualizarNomeProduto(Long id, String nome);
     Produto atualizarValorUnitarioProduto(Long id, double valorUnitario);

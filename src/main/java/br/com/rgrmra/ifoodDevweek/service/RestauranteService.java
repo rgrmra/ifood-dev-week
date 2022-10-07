@@ -13,10 +13,11 @@ public interface RestauranteService {
     Restaurante verRestaurante(Long id);
     String verNomeRestaurante(Long id);
     Endereco verEnderecoRestaurante(Long id);
+    List<Restaurante> pesquisarRestaurante(String nome);
     Restaurante atualizarRestaurante(Long id, RestauranteDto restauranteDto);
     Restaurante atualizarNomeRestaurante(Long id, String nome);
     Restaurante atualizarEnderecoRestaurante(Long id, Endereco endereco);
-    List<Produto> verListaDeProdutos(Long id);
+    List<Produto> verListaDeProdutosRestaurante(Long id);
     void deletarRestaurante(Long id);
 
 }

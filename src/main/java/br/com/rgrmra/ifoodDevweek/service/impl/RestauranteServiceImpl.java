@@ -6,6 +6,7 @@ import br.com.rgrmra.ifoodDevweek.model.Restaurante;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutoRepository;
 import br.com.rgrmra.ifoodDevweek.repository.RestauranteRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.RestauranteDto;
+import br.com.rgrmra.ifoodDevweek.service.ProdutoService;
 import br.com.rgrmra.ifoodDevweek.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,13 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Override
+    public List<Restaurante> pesquisarRestaurante(String nome) {
+        List<Restaurante> listaRestaurante = restauranteRepository.findAll();
+        listaRestaurante.removeIf(restaurante -> !restaurante.getNome().contains(nome));
+        return listaRestaurante;
+    }
+
+    @Override
     public Restaurante atualizarRestaurante(Long id, RestauranteDto restauranteDto) {
         Restaurante restaurante = verRestaurante(id);
         restaurante.setNome(restauranteDto.getNome());
@@ -69,14 +77,18 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Override
-    public List<Produto> verListaDeProdutos(Long id) {
-        List<Produto> listaProdutos = produtoRepository.findAll();
-        listaProdutos.removeIf(produto -> !produto.getRestaurante().equals(verRestaurante(id)));
-        return listaProdutos;
+    public List<Produto> verListaDeProdutosRestaurante(Long id) {
+        return verRestaurante(id).getProdutos();
     }
 
     @Override
     public void deletarRestaurante(Long id) {
         restauranteRepository.deleteById(id);
+        List<Produto> listaProdutos = produtoRepository.findAll();
+        for (Produto produto : listaProdutos) {
+            if (produto.getId() == id) {
+                produtoRepository.deleteById(produto.getId());
+            }
+        }
     }
 }

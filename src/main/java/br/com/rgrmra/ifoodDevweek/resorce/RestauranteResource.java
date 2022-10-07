@@ -38,6 +38,16 @@ public class RestauranteResource {
         return restauranteService.verEnderecoRestaurante(id);
     }
 
+    @GetMapping("/pesquisar/{nome}")
+    public List<Restaurante> pesquisarRestaurante(@PathVariable("nome") String nome) {
+        return restauranteService.pesquisarRestaurante(nome);
+    }
+
+    @GetMapping("/{id}/produtos")
+    public List<Produto> verListaDeProdutosRestaurante(@PathVariable("id") Long id) {
+        return restauranteService.verListaDeProdutosRestaurante(id);
+    }
+
     @PutMapping("/{id}/atualizar")
     public Restaurante atualizarRestaurante(@PathVariable("id") Long id, RestauranteDto restauranteDto) {
         return restauranteService.atualizarRestaurante(id, restauranteDto);
@@ -51,11 +61,6 @@ public class RestauranteResource {
     @PatchMapping("/{id}/atualizar-endereco")
     public Restaurante atualizarEnderecoRestaurante(@PathVariable("id") Long id, Endereco endereco) {
         return restauranteService.atualizarEnderecoRestaurante(id, endereco);
-    }
-
-    @GetMapping("/{id}/produtos")
-    public List<Produto> verListaDeProdutos(@PathVariable("id") Long id) {
-        return restauranteService.verListaDeProdutos(id);
     }
 
     @DeleteMapping("/{id}/deletar")

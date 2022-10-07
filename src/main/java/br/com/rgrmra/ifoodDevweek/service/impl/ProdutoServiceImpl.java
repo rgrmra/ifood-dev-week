@@ -31,7 +31,20 @@ public class ProdutoServiceImpl implements ProdutoService {
                 }
         ));
 
-        return produtoRepository.save(produto);
+        return atualizarListaRestaurante(produtoRepository.save(produto));
+    }
+
+    private Produto atualizarListaRestaurante(Produto produtoNovo) {
+        Restaurante restaurante = restauranteRepository.findById(produtoNovo.getRestaurante().getId()).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Restaurante não existe");
+                }
+        );
+        List<Produto> listaProdutos = produtoRepository.findAll();
+        listaProdutos.removeIf(produto -> !produto.getRestaurante().equals(restaurante));
+        restaurante.setProdutos(listaProdutos);
+        restauranteRepository.save(restaurante);
+        return produtoNovo;
     }
 
     @Override
@@ -64,6 +77,13 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
+    public List<Produto> pesquisarProduto(String nome) {
+        List<Produto> listaProdutos = produtoRepository.findAll();
+        listaProdutos.removeIf(produto -> !produto.getNome().contains(nome));
+        return listaProdutos;
+    }
+
+    @Override
     public Produto atualizarProduto(Long id, ProdutoDto produtoDto) {
         Produto produto = verProduto(id);
         produto.setNome(produtoDto.getNome());
@@ -74,28 +94,30 @@ public class ProdutoServiceImpl implements ProdutoService {
                     throw new RuntimeException("Restaurante não existe!");
                 }
         ));
-        return produtoRepository.save(produto);
+
+        return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
     @Override
     public Produto atualizarNomeProduto(Long id, String nome) {
         Produto produto = verProduto(id);
         produto.setNome(nome);
-        return produtoRepository.save(produto);
+
+        return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
     @Override
     public Produto atualizarValorUnitarioProduto(Long id, double valorUnitario) {
         Produto produto = verProduto(id);
         produto.setValorUnitario(valorUnitario);
-        return produtoRepository.save(produto);
+        return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
     @Override
     public Produto atualizarDisponibilidadeProduto(Long id, boolean disponivel) {
         Produto produto = verProduto(id);
         produto.setDisponivel(disponivel);
-        return produtoRepository.save(produto);
+        return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
     @Override
@@ -106,11 +128,17 @@ public class ProdutoServiceImpl implements ProdutoService {
                     throw new RuntimeException("Restaurante não existe!");
                 }
         ));
-        return produtoRepository.save(produto);
+        return atualizarListaRestaurante(produtoRepository.save(produto));
     }
 
     @Override
     public void deletarProduto(Long id) {
+        Produto produto = verProduto(id);
+        Restaurante restaurante = restauranteRepository.findById(produto.getRestaurante().getId()).orElseThrow();
+        List<Produto> listaProdutos = restaurante.getProdutos();
+        listaProdutos.remove(produto);
+        restaurante.setProdutos(listaProdutos);
+        restauranteRepository.save(restaurante);
         produtoRepository.deleteById(id);
     }
 }
