@@ -8,6 +8,8 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Api(value="/ifood-dev-week/clientes")
 @RestController
 @RequestMapping("/ifood-dev-week/clientes")
@@ -15,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class ClienteResource {
 
     private final ClienteService clienteService;
+
+    @GetMapping
+    public List<Cliente> verClientes() {
+        return clienteService.verClientes();
+    }
 
     @PostMapping()
     public Cliente adicionarCliente(ClienteDto clienteDto) {

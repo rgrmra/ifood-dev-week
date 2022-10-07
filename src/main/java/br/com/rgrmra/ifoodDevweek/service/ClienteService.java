@@ -4,8 +4,11 @@ import br.com.rgrmra.ifoodDevweek.model.Cliente;
 import br.com.rgrmra.ifoodDevweek.model.Endereco;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ClienteDto;
 
+import java.util.List;
+
 public interface ClienteService {
 
+    List<Cliente> verClientes();
     Cliente adicionarCliente(ClienteDto clienteDto);
     Cliente verCliente(Long id);
     String verNomeCliente(Long id);

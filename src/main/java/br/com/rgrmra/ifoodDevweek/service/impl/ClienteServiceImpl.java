@@ -20,6 +20,11 @@ public class ClienteServiceImpl implements ClienteService {
     private final SacolaRepository sacolaRepository;
 
     @Override
+    public List<Cliente> verClientes() {
+        return clienteRepository.findAll();
+    }
+
+    @Override
     public Cliente adicionarCliente(ClienteDto clienteDto) {
         return clienteRepository.save(Cliente.builder()
                 .nome(clienteDto.getNome())
@@ -70,7 +75,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public void deletarCliente(Long id) {
-        sacolaRepository.findAll().removeIf(sacola -> (sacola.getCliente().getId() == id));
+        List<Sacola> listaSacolas = sacolaRepository.findAll();
+        listaSacolas.removeIf(sacola -> (sacola.getCliente().getId() != id));
+        sacolaRepository.deleteAll(listaSacolas);
         clienteRepository.deleteById(id);
     }
 }
