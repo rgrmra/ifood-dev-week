@@ -3,6 +3,7 @@ package br.com.rgrmra.ifoodDevweek.service.impl;
 import br.com.rgrmra.ifoodDevweek.model.Endereco;
 import br.com.rgrmra.ifoodDevweek.model.Produto;
 import br.com.rgrmra.ifoodDevweek.model.Restaurante;
+import br.com.rgrmra.ifoodDevweek.repository.ProdutoRepository;
 import br.com.rgrmra.ifoodDevweek.repository.RestauranteRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.RestauranteDto;
 import br.com.rgrmra.ifoodDevweek.service.RestauranteService;
@@ -16,6 +17,7 @@ import java.util.List;
 public class RestauranteServiceImpl implements RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
+    private final ProdutoRepository produtoRepository;
 
     @Override
     public Restaurante adicionarRestaurante(RestauranteDto restauranteDto) {
@@ -68,7 +70,9 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Override
     public List<Produto> verListaDeProdutos(Long id) {
-        return verRestaurante(id).getProdutos();
+        List<Produto> listaProdutos = produtoRepository.findAll();
+        listaProdutos.removeIf(produto -> !produto.getRestaurante().equals(verRestaurante(id)));
+        return listaProdutos;
     }
 
     @Override

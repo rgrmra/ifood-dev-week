@@ -22,7 +22,8 @@ public class Produto {
     private double valorUnitario;
     @Builder.Default
     private boolean disponivel = true;
-    @ManyToOne
+    @Embedded
+    @OneToOne
     @JsonIgnore
     private Restaurante restaurante;
 }

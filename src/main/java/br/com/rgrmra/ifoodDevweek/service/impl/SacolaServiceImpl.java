@@ -21,7 +21,6 @@ public class SacolaServiceImpl implements SacolaService {
 
     private final SacolaRepository sacolaRepository;
     private final ProdutoRepository produtoRepository;
-    private final ItemRepository itemRepository;
 
     @Override
     public Item incluirItemNaSacola(ItemDto itemDto) {

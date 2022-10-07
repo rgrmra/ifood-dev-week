@@ -3,18 +3,21 @@ package br.com.rgrmra.ifoodDevweek.service.impl;
 import br.com.rgrmra.ifoodDevweek.model.Produto;
 import br.com.rgrmra.ifoodDevweek.model.Restaurante;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutoRepository;
+import br.com.rgrmra.ifoodDevweek.repository.RestauranteRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ProdutoDto;
 import br.com.rgrmra.ifoodDevweek.service.ProdutoService;
 import br.com.rgrmra.ifoodDevweek.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProdutoServiceImpl implements ProdutoService {
 
     private final ProdutoRepository produtoRepository;
-    private final RestauranteService restauranteService;
+    private final RestauranteRepository restauranteRepository;
 
     @Override
     public Produto adicionarProduto(ProdutoDto produtoDto) {
@@ -22,7 +25,12 @@ public class ProdutoServiceImpl implements ProdutoService {
         produto.setNome(produtoDto.getNome());
         produto.setValorUnitario(produtoDto.getValorUnitario());
         produto.setDisponivel(produtoDto.isDisponivel());
-        produto.setRestaurante(restauranteService.verRestaurante(produtoDto.getRestauranteId()));
+        produto.setRestaurante(restauranteRepository.findById(produtoDto.getRestauranteId()).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Restaurante não existe!");
+                }
+        ));
+
         return produtoRepository.save(produto);
     }
 
@@ -61,7 +69,11 @@ public class ProdutoServiceImpl implements ProdutoService {
         produto.setNome(produtoDto.getNome());
         produto.setValorUnitario(produtoDto.getValorUnitario());
         produto.setDisponivel(produtoDto.isDisponivel());
-        produto.setRestaurante(restauranteService.verRestaurante(produtoDto.getRestauranteId()));
+        produto.setRestaurante(restauranteRepository.findById(produtoDto.getRestauranteId()).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Restaurante não existe!");
+                }
+        ));
         return produtoRepository.save(produto);
     }
 
@@ -89,7 +101,11 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     public Produto atualizarResturantePorduto(Long id, Long restauranteId) {
         Produto produto = verProduto(id);
-        produto.setRestaurante(restauranteService.verRestaurante(id));
+        produto.setRestaurante(restauranteRepository.findById(restauranteId).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Restaurante não existe!");
+                }
+        ));
         return produtoRepository.save(produto);
     }
 
