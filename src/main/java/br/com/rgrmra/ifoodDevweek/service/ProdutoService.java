@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProdutoService {
 
-    List<Produto> verProdutos();
+    List<Produto> listarProdutos();
     Produto adicionarProduto(ProdutoDto produtoDto);
     Produto verProduto(Long id);
     String verNomeProduto(Long id);

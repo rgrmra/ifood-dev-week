@@ -20,7 +20,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     private final RestauranteRepository restauranteRepository;
 
     @Override
-    public List<Produto> verProdutos() {
+    public List<Produto> listarProdutos() {
         return produtoRepository.findAll();
     }
 

@@ -18,8 +18,8 @@ public class ProdutoResource {
     private final ProdutoService produtoService;
 
     @GetMapping
-    public List<Produto> verProdutos() {
-        return produtoService.verProdutos();
+    public List<Produto> listarProdutos() {
+        return produtoService.listarProdutos();
     }
 
     @PostMapping()

@@ -19,8 +19,8 @@ public class RestauranteResource {
     private final RestauranteService restauranteService;
 
     @GetMapping
-    public List<Restaurante> verRestaurantes() {
-        return restauranteService.verRestaurantes();
+    public List<Restaurante> listarRestaurantes() {
+        return restauranteService.listarRestaurantes();
     }
 
     @PostMapping()

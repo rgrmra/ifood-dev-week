@@ -20,7 +20,7 @@ public class ClienteServiceImpl implements ClienteService {
     private final SacolaRepository sacolaRepository;
 
     @Override
-    public List<Cliente> verClientes() {
+    public List<Cliente> listarClientes() {
         return clienteRepository.findAll();
     }
 

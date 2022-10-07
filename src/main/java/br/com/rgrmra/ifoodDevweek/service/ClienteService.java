@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ClienteService {
 
-    List<Cliente> verClientes();
+    List<Cliente> listarClientes();
     Cliente adicionarCliente(ClienteDto clienteDto);
     Cliente verCliente(Long id);
     String verNomeCliente(Long id);

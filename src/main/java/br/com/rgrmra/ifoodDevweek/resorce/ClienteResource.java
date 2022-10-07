@@ -19,8 +19,8 @@ public class ClienteResource {
     private final ClienteService clienteService;
 
     @GetMapping
-    public List<Cliente> verClientes() {
-        return clienteService.verClientes();
+    public List<Cliente> listarClientes() {
+        return clienteService.listarClientes();
     }
 
     @PostMapping()
