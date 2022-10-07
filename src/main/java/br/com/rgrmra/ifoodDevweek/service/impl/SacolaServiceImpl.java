@@ -4,7 +4,7 @@ import br.com.rgrmra.ifoodDevweek.enumeration.FormaPagamento;
 import br.com.rgrmra.ifoodDevweek.model.Item;
 import br.com.rgrmra.ifoodDevweek.model.Restaurante;
 import br.com.rgrmra.ifoodDevweek.model.Sacola;
-import br.com.rgrmra.ifoodDevweek.repository.ItemRepository;
+import br.com.rgrmra.ifoodDevweek.repository.ClienteRepository;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutoRepository;
 import br.com.rgrmra.ifoodDevweek.repository.SacolaRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ItemDto;
@@ -21,14 +21,43 @@ public class SacolaServiceImpl implements SacolaService {
 
     private final SacolaRepository sacolaRepository;
     private final ProdutoRepository produtoRepository;
+    private final ClienteRepository clienteRepository;
+
+    @Override
+    public List<Sacola> listarSacolas() {
+        return sacolaRepository.findAll();
+    }
+
+    @Override
+    public Sacola adicionarSacola(Long clienteId) {
+        return sacolaRepository.save(Sacola.builder()
+                .cliente(clienteRepository.findById(clienteId).orElseThrow(
+                        () -> {
+                            throw new RuntimeException("Cliente não existe!");
+                        }
+                )).build());
+    }
+
+    @Override
+    public Sacola verSacola(Long id) {
+        return sacolaRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Essa sacola não exite!");
+                }
+        );
+    }
+
+    @Override
+    public List<Sacola> verSacolaPeloCliente(Long clienteId) {
+        List<Sacola> listaSacolas = sacolaRepository.findAll();
+        listaSacolas.removeIf(sacola -> (sacola.getCliente().getId() != clienteId));
+        return listaSacolas;
+    }
 
     @Override
     public Item incluirItemNaSacola(ItemDto itemDto) {
         Sacola sacola = verSacola(itemDto.getSacolaId());
-
-        if (sacola.isFechada()) {
-            throw new RuntimeException("Esta sacola está fechada!");
-        }
+        verificaSacolaFechada(sacola);
 
         Item itemParaSerInserido = Item.builder()
                 .quantidade(itemDto.getQuantidade())
@@ -54,6 +83,13 @@ public class SacolaServiceImpl implements SacolaService {
             }
         }
 
+        sacola.setValorTotal(atualizarValorDaSacola(itensDaSacola));
+        sacolaRepository.save(sacola);
+
+        return itemParaSerInserido;
+    }
+
+    private double atualizarValorDaSacola(List<Item> itensDaSacola) {
         List<Double> valorDosItens = new ArrayList<>();
 
         for (Item itemDaSacola : itensDaSacola) {
@@ -61,39 +97,55 @@ public class SacolaServiceImpl implements SacolaService {
             valorDosItens.add(valorTotalItem);
         }
 
-        Double valorTotalSacola = valorDosItens.stream()
+        return valorDosItens.stream()
                 .mapToDouble(valorTotalDeCadaItem -> valorTotalDeCadaItem)
                 .sum();
-
-        sacola.setValorTotal(valorTotalSacola);
-
-        sacolaRepository.save(sacola);
-
-        return itemParaSerInserido;
     }
 
     @Override
-    public Sacola verSacola(Long id) {
-        return sacolaRepository.findById(id).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Essa sacola não exite!");
-                }
-        );
+    public Sacola removerItemNaSacola(Long sacolaId, Long itemId) {
+        Sacola sacola = verSacola(sacolaId);
+        verificaSacolaFechada(sacola);
+        List<Item> listaItems = sacola.getItens();
+        listaItems.removeIf(item -> (item.getId() == itemId));
+        sacola.setItens(listaItems);
+        sacola.setValorTotal(atualizarValorDaSacola(listaItems));
+        return sacolaRepository.save(sacola);
     }
 
     @Override
-    public Sacola fecharSacola(Long sacolaId, int numeroFormaDePagamento) {
+    public Sacola formaPagamentoSacola(Long id, FormaPagamento formaPagamento) {
+        Sacola sacola = verSacola(id);
+        verificaSacolaFechada(sacola);
+        sacola.setFormaPagamento(formaPagamento);
+        return sacolaRepository.save(sacola);
+    }
+
+    private void verificaSacolaFechada(Sacola sacola) {
+        if (sacola.isFechada()) {
+            throw new RuntimeException("Impossível! A sacola já está fechada!");
+        }
+    }
+
+    @Override
+    public Sacola fecharSacola(Long sacolaId) {
         Sacola sacola = verSacola(sacolaId);
         if (sacola.getItens().isEmpty()) {
             throw new RuntimeException("Sacola vazia! Inclua itens na sacola!");
         }
 
-        FormaPagamento formaPagamento =
-                numeroFormaDePagamento == 0 ? FormaPagamento.DINHEIRO : FormaPagamento.MAQUINETA;
+        if (sacola.getFormaPagamento() == null) {
+            throw new RuntimeException("Defina uma forma de pagamento antes de fechar a sacola");
+        }
 
-        sacola.setFormaPagamento(formaPagamento);
         sacola.setFechada(true);
 
         return sacolaRepository.save(sacola);
+    }
+
+    @Override
+    public void deletarSacola(Long id) {
+        Sacola sacola = verSacola(id);
+        sacolaRepository.delete(sacola);
     }
 }
