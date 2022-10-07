@@ -20,6 +20,11 @@ public class ProdutoServiceImpl implements ProdutoService {
     private final RestauranteRepository restauranteRepository;
 
     @Override
+    public List<Produto> verProdutos() {
+        return produtoRepository.findAll();
+    }
+
+    @Override
     public Produto adicionarProduto(ProdutoDto produtoDto) {
         return atualizarListaRestaurante(produtoRepository.save(Produto.builder()
                 .nome(produtoDto.getNome())

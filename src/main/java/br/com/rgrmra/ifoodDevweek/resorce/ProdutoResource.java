@@ -17,6 +17,11 @@ import java.util.List;
 public class ProdutoResource {
     private final ProdutoService produtoService;
 
+    @GetMapping
+    public List<Produto> verProdutos() {
+        return produtoService.verProdutos();
+    }
+
     @PostMapping()
     public Produto adicionarProduto(@RequestBody ProdutoDto produtoDto) {
         return produtoService.adicionarProduto(produtoDto);
