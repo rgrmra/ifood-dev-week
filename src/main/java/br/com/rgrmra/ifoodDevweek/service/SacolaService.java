@@ -13,7 +13,7 @@ public interface SacolaService {
     Sacola adicionarSacola(Long clienteId);
     Sacola verSacola(Long id);
     List<Sacola> verSacolaPeloCliente(Long clienteId);
-    Item incluirItemNaSacola(ItemDto itemDto);
+    Item incluirItemNaSacola(Long id, ItemDto itemDto);
     Sacola removerItemNaSacola(Long sacolaId, Long itemId);
     Sacola formaPagamentoSacola(Long id, FormaPagamento formaPagamento);
     Sacola fecharSacola(Long id);

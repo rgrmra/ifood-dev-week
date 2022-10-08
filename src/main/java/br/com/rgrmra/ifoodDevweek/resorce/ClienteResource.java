@@ -43,22 +43,22 @@ public class ClienteResource {
         return clienteService.verEnderecoCliente(id);
     }
 
-    @PutMapping("/{id}/atualizar")
+    @PutMapping("/{id}")
     public Cliente atualizarCliente(@PathVariable("id") Long id, @RequestBody ClienteDto clienteDto) {
         return clienteService.atualizarCliente(id, clienteDto);
     }
 
-    @PatchMapping("/{id}/atualizar-nome")
+    @PatchMapping("/{id}/nome")
     public Cliente atualizarNomeCliente(@PathVariable("id") Long id, @RequestBody String nome) {
         return clienteService.atualiarNomeCliente(id, nome);
     }
 
-    @PatchMapping("/{id}/atualizar-endereco/")
+    @PatchMapping("/{id}/endereco")
     public Cliente atualizarEnderecoCliente(@PathVariable("id") Long id, @RequestBody Endereco endereco) {
         return clienteService.atualizarEnderecoCliente(id, endereco);
     }
 
-    @DeleteMapping("/{id}/deletar")
+    @DeleteMapping("/{id}")
     public void deletarCliente(@PathVariable("id") Long id) {
         clienteService.deletarCliente(id);
     }

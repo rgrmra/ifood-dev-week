@@ -53,36 +53,36 @@ public class ProdutoResource {
     }
 
     @GetMapping("/pesquisar/{nome}")
-    public List<Produto> pesquisarRestaurante(@PathVariable("nome") String nome) {
+    public List<Produto> pesquisarProduto(@PathVariable("nome") String nome) {
         return produtoService.pesquisarProduto(nome);
     }
 
-    @PutMapping("/{id}/atualizar")
+    @PutMapping("/{id}")
     public Produto atualizarProduto(@PathVariable("id") Long id, @RequestBody ProdutoDto produtoDto) {
         return produtoService.atualizarProduto(id, produtoDto);
     }
 
-    @PatchMapping("/{id}/atualizar-nome")
+    @PatchMapping("/{id}/nome")
     public Produto atualizarNomeProduto(@PathVariable("id") Long id, @RequestBody String nome) {
         return produtoService.atualizarNomeProduto(id, nome);
     }
 
-    @PatchMapping("/{id}/atualizar-valor")
-    public Produto atualizarValorUnitarioProduto(@PathVariable("id") Long id, double valorUnitario) {
+    @PatchMapping("/{id}/valor")
+    public Produto atualizarValorUnitarioProduto(@PathVariable("id") Long id, @RequestBody double valorUnitario) {
         return produtoService.atualizarValorUnitarioProduto(id, valorUnitario);
     }
 
-    @PatchMapping("/{id}/atualizar-disponibilidade")
-    public Produto atualizarDisponibilidadeProduto(@PathVariable("id") Long id, boolean disponivel) {
+    @PatchMapping("/{id}/disponibilidade")
+    public Produto atualizarDisponibilidadeProduto(@PathVariable("id") Long id, @RequestBody boolean disponivel) {
         return produtoService.atualizarDisponibilidadeProduto(id, disponivel);
     }
 
-    @PatchMapping("/{id}/atualizar-restaurante")
-    public Produto atualizarRestauranteProduto(@PathVariable("id") Long id, Long restauranteId) {
+    @PatchMapping("/{id}/restaurante")
+    public Produto atualizarRestauranteProduto(@PathVariable("id") Long id, @RequestBody Long restauranteId) {
         return produtoService.atualizarResturantePorduto(id, restauranteId);
     }
 
-    @DeleteMapping("/{id}/deletar")
+    @DeleteMapping("/{id}")
     public void deletarProduto(@PathVariable("id") Long id) {
         produtoService.deletarProduto(id);
     }

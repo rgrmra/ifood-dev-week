@@ -53,22 +53,22 @@ public class RestauranteResource {
         return restauranteService.verListaDeProdutosRestaurante(id);
     }
 
-    @PutMapping("/{id}/atualizar")
+    @PutMapping("/{id}")
     public Restaurante atualizarRestaurante(@PathVariable("id") Long id, @RequestBody RestauranteDto restauranteDto) {
         return restauranteService.atualizarRestaurante(id, restauranteDto);
     }
 
-    @PatchMapping("/{id}/atualizar-nome")
+    @PatchMapping("/{id}/nome")
     public Restaurante atualizarNomeRestaurante(@PathVariable("id") Long id, @RequestBody String nome) {
         return restauranteService.atualizarNomeRestaurante(id, nome);
     }
 
-    @PatchMapping("/{id}/atualizar-endereco")
+    @PatchMapping("/{id}/endereco")
     public Restaurante atualizarEnderecoRestaurante(@PathVariable("id") Long id, @RequestBody Endereco endereco) {
         return restauranteService.atualizarEnderecoRestaurante(id, endereco);
     }
 
-    @DeleteMapping("/{id}/deletar")
+    @DeleteMapping("/{id}")
     public void deletarRestaurante(@PathVariable("id") Long id) {
         restauranteService.deletarRestaurante(id);
     }

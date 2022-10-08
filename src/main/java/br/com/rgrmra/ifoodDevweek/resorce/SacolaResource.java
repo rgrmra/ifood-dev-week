@@ -39,9 +39,9 @@ public class SacolaResource {
         return sacolaService.verSacolaPeloCliente(clienteId);
     }
 
-    @PostMapping("/{id}/incluir-item")
-    public Item incluirIntemNaSacola(@RequestBody ItemDto itemDto) {
-        return sacolaService.incluirItemNaSacola(itemDto);
+    @PatchMapping("{id}/incluir-item")
+    public Item incluirIntemNaSacola(@PathVariable("id") Long id, @RequestBody ItemDto itemDto) {
+        return sacolaService.incluirItemNaSacola(id, itemDto);
     }
 
     @DeleteMapping("/{id}/deletar-item/{itemId}")
@@ -49,17 +49,17 @@ public class SacolaResource {
         return sacolaService.removerItemNaSacola(sacolaId, itemId);
     }
 
-    @PostMapping("/{id}/forma-pagamento/{formaPagamento}")
+    @PatchMapping("/{id}/forma-pagamento")
     public Sacola formaPagamentoSacola(@PathVariable("id") Long id, @RequestParam("formaPagamento") FormaPagamento formaPagamento) {
         return sacolaService.formaPagamentoSacola(id, formaPagamento);
     }
 
-    @PatchMapping("/{id}/fechar-sacola/")
+    @PatchMapping("/{id}/fechar-sacola")
     public Sacola fecharSacola(@PathVariable("id") Long id) {
         return sacolaService.fecharSacola(id);
     }
 
-    @DeleteMapping("/{id}/deletar")
+    @DeleteMapping("/{id}")
     public void deletarSacola(@PathVariable("id") Long id) {
         sacolaService.deletarSacola(id);
     }

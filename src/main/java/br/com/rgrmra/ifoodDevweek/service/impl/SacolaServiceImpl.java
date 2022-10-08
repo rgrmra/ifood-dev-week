@@ -53,8 +53,8 @@ public class SacolaServiceImpl implements SacolaService {
     }
 
     @Override
-    public Item incluirItemNaSacola(ItemDto itemDto) {
-        Sacola sacola = verSacola(itemDto.getSacolaId());
+    public Item incluirItemNaSacola(Long id, ItemDto itemDto) {
+        Sacola sacola = verSacola(id);
         verificaSacolaFechada(sacola);
 
         Produto produto = produtoRepository.findById(itemDto.getProdutoId()).orElseThrow(
