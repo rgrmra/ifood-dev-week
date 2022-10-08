@@ -1,6 +1,5 @@
-package br.com.rgrmra.ifoodDevweek.resorce.dto;
+package br.com.rgrmra.ifoodDevweek.model;
 
-import br.com.rgrmra.ifoodDevweek.model.Endereco;
 import lombok.*;
 
 import javax.persistence.Embeddable;
@@ -11,7 +10,8 @@ import javax.persistence.Embeddable;
 @Getter
 @Setter
 @Embeddable
-public class ClienteDto {
+public class ItemProduct {
     private String nome;
-    private Endereco endereco;
+    private double price;
+    private Long restaurantId;
 }

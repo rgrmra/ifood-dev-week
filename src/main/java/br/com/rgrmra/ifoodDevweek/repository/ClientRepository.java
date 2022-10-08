@@ -1,10 +1,10 @@
 package br.com.rgrmra.ifoodDevweek.repository;
 
-import br.com.rgrmra.ifoodDevweek.model.Cliente;
+import br.com.rgrmra.ifoodDevweek.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
 
 }

@@ -14,15 +14,15 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Embeddable
 @Entity
-public class Restaurante {
+public class Restaurant {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RestauranteId")
-    @SequenceGenerator(name = "RestauranteId", sequenceName = "RESTAURANTE_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RestaurantId")
+    @SequenceGenerator(name = "RestaurantId", sequenceName = "RESTAURANT_ID")
     private long id;
-    private String nome;
+    private String name;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Produto> produtos;
+    private List<Product> products;
     @Embedded
-    private Endereco endereco;
+    private Address address;
 
 }

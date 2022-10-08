@@ -1,6 +1,5 @@
 package br.com.rgrmra.ifoodDevweek.resorce.dto;
 
-import br.com.rgrmra.ifoodDevweek.model.Restaurante;
 import lombok.*;
 
 import javax.persistence.Embeddable;
@@ -13,11 +12,11 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 @Embeddable
-public class ProdutoDto {
-    private String nome;
-    private double valorUnitario;
-    private boolean disponivel;
+public class ProdutDto {
+    private String name;
+    private double price;
+    private boolean available;
     @Embedded
     @ManyToOne
-    private Long restauranteId;
+    private Long restaurantId;
 }

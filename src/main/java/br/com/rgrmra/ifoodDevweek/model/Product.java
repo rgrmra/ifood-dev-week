@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Builder
 @AllArgsConstructor
@@ -14,17 +13,17 @@ import java.math.BigDecimal;
 @Setter
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
-public class Produto {
+public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ProdutoId")
-    @SequenceGenerator(name = "ProdutoId", sequenceName = "PRODUTO_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ProdutId")
+    @SequenceGenerator(name = "ProdutId", sequenceName = "PRODUT_ID")
     private long id;
-    private String nome;
-    private double valorUnitario;
+    private String name;
+    private double price;
     @Builder.Default
-    private boolean disponivel = true;
+    private boolean available = true;
     @Embedded
     @OneToOne
     @JsonIgnore
-    private Restaurante restaurante;
+    private Restaurant restaurant;
 }

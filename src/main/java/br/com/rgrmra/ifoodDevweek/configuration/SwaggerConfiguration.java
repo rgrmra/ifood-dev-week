@@ -22,10 +22,10 @@ public class SwaggerConfiguration {
 
     public ApiInfo getInfo() {
         return new ApiInfoBuilder()
-                .title("Ifood Dev Week Project")
-                .description("API para Servir uma Aplicação de Delivery.<br>" +
-                        "Está aplicação contém as funcionalidades básicas, porém, necessárias para o funcionamento " +
-                        "de uma aplicação de delivery.")
+                .title("Ifood Dev Week Project - DIO")
+                .description("API to manage a delivery application.<br>" +
+                        "This application contain the basic functionalities, however, necessary for the operation" +
+                        "of a delivery application.")
                 .version("1.0.0")
                 .build();
     }

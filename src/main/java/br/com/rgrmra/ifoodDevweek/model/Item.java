@@ -18,9 +18,9 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ItemId")
     @SequenceGenerator(name = "ItemId", sequenceName = "ITEM_ID")
     private long id;
-    private ProdutoItem produtoItem;
-    private int quantidade;
+    private ItemProduct itemProduct;
+    private int quantity;
     @ManyToOne
     @JsonIgnore
-    private Sacola sacola;
+    private Cart cart;
 }
