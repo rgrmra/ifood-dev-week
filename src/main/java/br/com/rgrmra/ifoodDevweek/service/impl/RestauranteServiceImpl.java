@@ -88,7 +88,9 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Override
     public void deletarRestaurante(Long id) {
+        List<Produto> listaProdutos = verListaDeProdutosRestaurante(id);
+        listaProdutos.removeIf(produto -> !(produto.getRestaurante().getId() == id));
+        produtoRepository.deleteAll(listaProdutos);
         restauranteRepository.deleteById(id);
-        produtoRepository.findAll().removeIf(produto -> (produto.getId() == id));
     }
 }

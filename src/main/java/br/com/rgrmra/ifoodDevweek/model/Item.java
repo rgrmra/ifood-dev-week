@@ -18,8 +18,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ItemId")
     @SequenceGenerator(name = "ItemId", sequenceName = "ITEM_ID")
     private long id;
-    @OneToOne
-    private Produto produto;
+    private ProdutoItem produtoItem;
     private int quantidade;
     @ManyToOne
     @JsonIgnore

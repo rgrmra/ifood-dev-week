@@ -120,15 +120,17 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Produto atualizarResturantePorduto(Long id, Long restauranteId) {
-        Produto produto = verProduto(id);
-        produto.setRestaurante(encontrarRestaurante(restauranteId));
-        return atualizarListaRestaurante(produtoRepository.save(produto));
+        Produto produtoNovo = verProduto(id);
+        Restaurante restaurante = encontrarRestaurante(restauranteId);
+        restaurante.getProdutos().removeIf(produto -> produto.equals(verProduto(id)));
+        restauranteRepository.save(restaurante);
+        return atualizarListaRestaurante(produtoRepository.save(produtoNovo));
     }
 
     @Override
     public void deletarProduto(Long id) {
-        Restaurante restaurante = encontrarRestaurante(verProduto(id).getId());
-        restaurante.getProdutos().removeIf(produto -> produto.equals(verProduto(id)));
+        Restaurante restaurante = encontrarRestaurante(verProduto(id).getRestaurante().getId());
+        restaurante.getProdutos().removeIf(produto -> (produto.getId() == id));
         restauranteRepository.save(restaurante);
         produtoRepository.deleteById(id);
     }

@@ -1,9 +1,7 @@
 package br.com.rgrmra.ifoodDevweek.service.impl;
 
 import br.com.rgrmra.ifoodDevweek.enumeration.FormaPagamento;
-import br.com.rgrmra.ifoodDevweek.model.Item;
-import br.com.rgrmra.ifoodDevweek.model.Restaurante;
-import br.com.rgrmra.ifoodDevweek.model.Sacola;
+import br.com.rgrmra.ifoodDevweek.model.*;
 import br.com.rgrmra.ifoodDevweek.repository.ClienteRepository;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutoRepository;
 import br.com.rgrmra.ifoodDevweek.repository.SacolaRepository;
@@ -59,22 +57,28 @@ public class SacolaServiceImpl implements SacolaService {
         Sacola sacola = verSacola(itemDto.getSacolaId());
         verificaSacolaFechada(sacola);
 
+        Produto produto = produtoRepository.findById(itemDto.getProdutoId()).orElseThrow(
+                () -> {
+                    throw new RuntimeException("Produto não existe!");
+                }
+        );
+
         Item itemParaSerInserido = Item.builder()
                 .quantidade(itemDto.getQuantidade())
                 .sacola(sacola)
-                .produto(produtoRepository.findById(itemDto.getProdutoId()).orElseThrow(
-                        () -> {
-                            throw new RuntimeException("Esse produto não existe!");
-                        }
-                ))
+                .produtoItem(ProdutoItem.builder()
+                        .nome(produto.getNome())
+                        .valorUnitario(produto.getValorUnitario())
+                        .restauranteId(produto.getRestaurante().getId())
+                        .build())
                 .build();
 
         List<Item> itensDaSacola = sacola.getItens();
         if (itensDaSacola.isEmpty()) {
             itensDaSacola.add(itemParaSerInserido);
         } else {
-            Restaurante restauranteAtual = itensDaSacola.get(0).getProduto().getRestaurante();
-            Restaurante restauranteDoItemParaAdicionar = itemParaSerInserido.getProduto().getRestaurante();
+            Long restauranteAtual = itensDaSacola.get(0).getProdutoItem().getRestauranteId();
+            Long restauranteDoItemParaAdicionar = itemParaSerInserido.getProdutoItem().getRestauranteId();
             if (restauranteAtual.equals(restauranteDoItemParaAdicionar)) {
                 itensDaSacola.add(itemParaSerInserido);
             } else {
@@ -93,7 +97,7 @@ public class SacolaServiceImpl implements SacolaService {
         List<Double> valorDosItens = new ArrayList<>();
 
         for (Item itemDaSacola : itensDaSacola) {
-            double valorTotalItem = itemDaSacola.getProduto().getValorUnitario() * itemDaSacola.getQuantidade();
+            double valorTotalItem = itemDaSacola.getProdutoItem().getValorUnitario() * itemDaSacola.getQuantidade();
             valorDosItens.add(valorTotalItem);
         }
 

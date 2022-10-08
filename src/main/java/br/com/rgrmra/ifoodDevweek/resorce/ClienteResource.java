@@ -24,7 +24,7 @@ public class ClienteResource {
     }
 
     @PostMapping()
-    public Cliente adicionarCliente(ClienteDto clienteDto) {
+    public Cliente adicionarCliente(@RequestBody ClienteDto clienteDto) {
         return clienteService.adicionarCliente(clienteDto);
     }
 
@@ -39,22 +39,22 @@ public class ClienteResource {
     }
 
     @GetMapping("/{id}/endereco")
-    public Endereco verEnderecoCliente(@PathVariable("Id") Long id) {
+    public Endereco verEnderecoCliente(@PathVariable("id") Long id) {
         return clienteService.verEnderecoCliente(id);
     }
 
     @PutMapping("/{id}/atualizar")
-    public Cliente atualizarCliente(@PathVariable("id") Long id, ClienteDto clienteDto) {
+    public Cliente atualizarCliente(@PathVariable("id") Long id, @RequestBody ClienteDto clienteDto) {
         return clienteService.atualizarCliente(id, clienteDto);
     }
 
     @PatchMapping("/{id}/atualizar-nome")
-    public Cliente atualizarNomeCliente(@PathVariable("id") Long id, String nome) {
+    public Cliente atualizarNomeCliente(@PathVariable("id") Long id, @RequestBody String nome) {
         return clienteService.atualiarNomeCliente(id, nome);
     }
 
-    @PatchMapping("/{id}/atualizar-endereco")
-    public Cliente atualizarEnderecoCliente(@PathVariable("id") Long id, Endereco endereco) {
+    @PatchMapping("/{id}/atualizar-endereco/")
+    public Cliente atualizarEnderecoCliente(@PathVariable("id") Long id, @RequestBody Endereco endereco) {
         return clienteService.atualizarEnderecoCliente(id, endereco);
     }
 

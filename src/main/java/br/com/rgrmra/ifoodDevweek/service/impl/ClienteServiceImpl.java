@@ -76,7 +76,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public void deletarCliente(Long id) {
         List<Sacola> listaSacolas = sacolaRepository.findAll();
-        listaSacolas.removeIf(sacola -> (sacola.getCliente().getId() != id));
+        listaSacolas.removeIf(sacola -> !(sacola.getCliente().getId() == id));
         sacolaRepository.deleteAll(listaSacolas);
         clienteRepository.deleteById(id);
     }
