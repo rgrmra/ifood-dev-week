@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Builder
 @AllArgsConstructor
@@ -15,11 +16,11 @@ import javax.persistence.*;
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ProdutId")
-    @SequenceGenerator(name = "ProdutId", sequenceName = "PRODUT_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ProductId")
+    @SequenceGenerator(name = "ProductId", sequenceName = "PRODUCT_ID")
     private long id;
     private String name;
-    private double price;
+    private BigDecimal price;
     @Builder.Default
     private boolean available = true;
     @Embedded

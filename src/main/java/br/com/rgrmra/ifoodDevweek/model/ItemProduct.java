@@ -3,6 +3,7 @@ package br.com.rgrmra.ifoodDevweek.model;
 import lombok.*;
 
 import javax.persistence.Embeddable;
+import java.math.BigDecimal;
 
 @Builder
 @AllArgsConstructor
@@ -12,6 +13,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ItemProduct {
     private String nome;
-    private double price;
+    private BigDecimal price;
     private Long restaurantId;
 }

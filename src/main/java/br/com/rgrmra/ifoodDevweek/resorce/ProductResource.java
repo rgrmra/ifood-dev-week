@@ -2,12 +2,13 @@ package br.com.rgrmra.ifoodDevweek.resorce;
 
 import br.com.rgrmra.ifoodDevweek.model.Product;
 import br.com.rgrmra.ifoodDevweek.model.Restaurant;
-import br.com.rgrmra.ifoodDevweek.resorce.dto.ProdutDto;
+import br.com.rgrmra.ifoodDevweek.resorce.dto.ProductDto;
 import br.com.rgrmra.ifoodDevweek.service.ProductService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Api(value="/ifood-dev-week/products")
@@ -23,8 +24,8 @@ public class ProductResource {
     }
 
     @PostMapping()
-    public Product addProduct(@RequestBody ProdutDto produtDto) {
-        return productService.addProduct(produtDto);
+    public Product addProduct(@RequestBody ProductDto productDto) {
+        return productService.addProduct(productDto);
     }
 
     @GetMapping("/{id}")
@@ -38,7 +39,7 @@ public class ProductResource {
     }
 
     @GetMapping("/{id}/price")
-    public double getProductPriceById(@PathVariable("id") Long id) {
+    public BigDecimal getProductPriceById(@PathVariable("id") Long id) {
         return productService.getProductPriceById(id);
     }
 
@@ -58,8 +59,8 @@ public class ProductResource {
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable("id") Long id, @RequestBody ProdutDto produtDto) {
-        return productService.updateProduct(id, produtDto);
+    public Product updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
+        return productService.updateProduct(id, productDto);
     }
 
     @PatchMapping("/{id}/name")
@@ -68,7 +69,7 @@ public class ProductResource {
     }
 
     @PatchMapping("/{id}/price")
-    public Product updateProductPrice(@PathVariable("id") Long id, @RequestParam double price) {
+    public Product updateProductPrice(@PathVariable("id") Long id, @RequestParam BigDecimal price) {
         return productService.updateProductPrice(id, price);
     }
 

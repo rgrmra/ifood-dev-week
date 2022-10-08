@@ -4,11 +4,12 @@ import br.com.rgrmra.ifoodDevweek.model.Product;
 import br.com.rgrmra.ifoodDevweek.model.Restaurant;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutRepository;
 import br.com.rgrmra.ifoodDevweek.repository.RestaurantRepository;
-import br.com.rgrmra.ifoodDevweek.resorce.dto.ProdutDto;
+import br.com.rgrmra.ifoodDevweek.resorce.dto.ProductDto;
 import br.com.rgrmra.ifoodDevweek.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -24,12 +25,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(ProdutDto produtDto) {
+    public Product addProduct(ProductDto productDto) {
         return updateRestaurantList(produtRepository.save(Product.builder()
-                .name(produtDto.getName())
-                .price(produtDto.getPrice())
-                .available(produtDto.isAvailable())
-                .restaurant(findRestaurant(produtDto.getRestaurantId()))
+                .name(productDto.getName())
+                .price(new BigDecimal(String.valueOf(productDto.getPrice())))
+                .available(productDto.isAvailable())
+                .restaurant(findRestaurant(productDto.getRestaurantId()))
                 .build()));
     }
 
@@ -65,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public double getProductPriceById(Long id) {
+    public BigDecimal getProductPriceById(Long id) {
         return getProductById(id).getPrice();
     }
 
@@ -87,12 +88,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, ProdutDto produtDto) {
+    public Product updateProduct(Long id, ProductDto productDto) {
         Product product = getProductById(id);
-        product.setName(produtDto.getName());
-        product.setPrice(produtDto.getPrice());
-        product.setAvailable(produtDto.isAvailable());
-        product.setRestaurant(findRestaurant(produtDto.getRestaurantId()));
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setAvailable(productDto.isAvailable());
+        product.setRestaurant(findRestaurant(productDto.getRestaurantId()));
         return updateRestaurantList(produtRepository.save(product));
     }
 
@@ -104,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProductPrice(Long id, double price) {
+    public Product updateProductPrice(Long id, BigDecimal price) {
         Product product = getProductById(id);
         product.setPrice(price);
         return updateRestaurantList(produtRepository.save(product));

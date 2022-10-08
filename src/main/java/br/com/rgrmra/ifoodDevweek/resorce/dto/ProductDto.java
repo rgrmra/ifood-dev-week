@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 @Builder
 @AllArgsConstructor
@@ -12,9 +13,9 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 @Embeddable
-public class ProdutDto {
+public class ProductDto {
     private String name;
-    private double price;
+    private BigDecimal price;
     private boolean available;
     @Embedded
     @ManyToOne

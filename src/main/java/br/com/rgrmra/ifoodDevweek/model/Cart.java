@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -25,7 +26,7 @@ public class Cart {
     private Client client;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Item> itens;
-    private Double finalValue;
+    private BigDecimal finalPrice;
     @Enumerated
     private PaymentMethod paymentMethod;
     private boolean closed;

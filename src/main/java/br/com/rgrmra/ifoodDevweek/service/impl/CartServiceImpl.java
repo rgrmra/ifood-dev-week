@@ -10,6 +10,7 @@ import br.com.rgrmra.ifoodDevweek.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,23 +87,22 @@ public class CartServiceImpl implements CartService {
             }
         }
 
-        cart.setFinalValue(updateCartPrice(cartItems));
+        cart.setFinalPrice(updateCartPrice(cartItems));
         cartRepository.save(cart);
 
         return newItem;
     }
 
-    private double updateCartPrice(List<Item> cartItems) {
-        List<Double> itemsPrice = new ArrayList<>();
-
+    private BigDecimal updateCartPrice(List<Item> cartItems) {
+        BigDecimal itemsFinalPrice = new BigDecimal("0.0");
         for (Item cartItem : cartItems) {
-            double valorTotalItem = cartItem.getItemProduct().getPrice() * cartItem.getQuantity();
-            itemsPrice.add(valorTotalItem);
+            itemsFinalPrice = itemsFinalPrice.add(
+                    cartItem.getItemProduct().getPrice().multiply(
+                            new BigDecimal(cartItem.getQuantity())
+                    )
+            );
         }
-
-        return itemsPrice.stream()
-                .mapToDouble(finalValueEachItem -> finalValueEachItem)
-                .sum();
+        return itemsFinalPrice;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class CartServiceImpl implements CartService {
         List<Item> itemsList = cart.getItens();
         itemsList.removeIf(item -> (item.getId() == itemId));
         cart.setItens(itemsList);
-        cart.setFinalValue(updateCartPrice(itemsList));
+        cart.setFinalPrice(updateCartPrice(itemsList));
         return cartRepository.save(cart);
     }
 
