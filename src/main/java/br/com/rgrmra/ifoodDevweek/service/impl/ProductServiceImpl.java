@@ -1,5 +1,8 @@
 package br.com.rgrmra.ifoodDevweek.service.impl;
 
+import br.com.rgrmra.ifoodDevweek.exception.NullPriceException;
+import br.com.rgrmra.ifoodDevweek.exception.ProductNotFoundException;
+import br.com.rgrmra.ifoodDevweek.exception.RestaurantNotFoundException;
 import br.com.rgrmra.ifoodDevweek.model.Product;
 import br.com.rgrmra.ifoodDevweek.model.Restaurant;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutRepository;
@@ -26,17 +29,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product addProduct(ProductDto productDto) {
+
+        if (productDto.getPrice().signum() != 1) {
+            throw new NullPriceException();
+        }
+
         return updateRestaurantList(productRepository.save(Product.builder()
                 .name(productDto.getName())
                 .price(new BigDecimal(String.valueOf(productDto.getPrice())))
                 .available(productDto.isAvailable())
-                .restaurant(restaurantRepository.getReferenceById(productDto.getRestaurantId()))
+                .restaurant(getRestaurantById(productDto.getRestaurantId()))
                 .build()));
     }
 
+    private Restaurant getRestaurantById(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> {
+                    throw new RestaurantNotFoundException(restaurantId);
+                }
+        );
+    }
+
     private Product updateRestaurantList(Product newProduct) {
-        Restaurant restaurant = restaurantRepository.getReferenceById(newProduct.getRestaurant().getId());
-        List<Product> productsList = restaurantRepository.getReferenceById(restaurant.getId()).getProducts();
+        Restaurant restaurant = getRestaurantById(newProduct.getRestaurant().getId());
+        List<Product> productsList = restaurant.getProducts();
         productsList.add(newProduct);
         restaurant.setProducts(productsList);
         restaurantRepository.save(restaurant);
@@ -44,10 +60,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElseThrow(
                 () -> {
-                    throw new RuntimeException("Product doesn't exist!");
+                    throw new ProductNotFoundException(productId);
                 }
         );
     }
@@ -69,13 +85,13 @@ public class ProductServiceImpl implements ProductService {
         if (productDto.isAvailable() != product.isAvailable())
             product.setAvailable(productDto.isAvailable());
         if(!(productDto.getRestaurantId() == 0))
-            product.setRestaurant(restaurantRepository.getReferenceById(productDto.getRestaurantId()));
+            product.setRestaurant(getRestaurantById(productDto.getRestaurantId()));
         return updateRestaurantList(productRepository.save(product));
     }
 
     @Override
     public void deleteProduct(Long productId) {
-        Restaurant restaurant = restaurantRepository.getReferenceById(getProductById(productId).getRestaurant().getId());
+        Restaurant restaurant = getRestaurantById(getProductById(productId).getRestaurant().getId());
         restaurant.getProducts().removeIf(product -> (product.getId() == productId));
         restaurantRepository.save(restaurant);
         productRepository.deleteById(productId);

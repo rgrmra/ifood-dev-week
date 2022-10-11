@@ -1,19 +1,17 @@
 package br.com.rgrmra.ifoodDevweek.service.impl;
 
 import br.com.rgrmra.ifoodDevweek.enumeration.PaymentMethod;
+import br.com.rgrmra.ifoodDevweek.exception.*;
 import br.com.rgrmra.ifoodDevweek.model.*;
 import br.com.rgrmra.ifoodDevweek.repository.ClientRepository;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutRepository;
 import br.com.rgrmra.ifoodDevweek.repository.CartRepository;
-import br.com.rgrmra.ifoodDevweek.resorce.ClientResource;
-import br.com.rgrmra.ifoodDevweek.resorce.ProductResource;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ItemDto;
 import br.com.rgrmra.ifoodDevweek.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,7 +19,7 @@ import java.util.List;
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
-    private final ProdutRepository produtRepository;
+    private final ProdutRepository productRepository;
     private final ClientRepository clientRepository;
 
     @Override
@@ -32,15 +30,19 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart addCart(Long clientId) {
         return cartRepository.save(Cart.builder()
-                .client(clientRepository.getReferenceById(clientId))
+                .client(clientRepository.findById(clientId).orElseThrow(
+                        () -> {
+                            throw new ClientNotFoundException(clientId);
+                        }
+                ))
                 .build());
     }
 
     @Override
-    public Cart getCartById(Long id) {
-        return cartRepository.findById(id).orElseThrow(
+    public Cart getCartById(Long cartId) {
+        return cartRepository.findById(cartId).orElseThrow(
                 () -> {
-                    throw new RuntimeException("Cart doesn't exist!");
+                    throw new CartNotFoundException(cartId);
                 }
         );
     }
@@ -53,11 +55,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Item addItemInCart(Long id, ItemDto itemDto) {
-        Cart cart = getCartById(id);
+    public Item addItemInCart(Long cartId, ItemDto itemDto) {
+        Cart cart = getCartById(cartId);
         checkIfCartIsClosed(cart);
 
-        Product product = produtRepository.getReferenceById(itemDto.getProdutId());
+        Product product = productRepository.findById(itemDto.getProdutId()).orElseThrow(
+                () -> {
+                    throw new ProductNotFoundException(itemDto.getProdutId());
+                }
+        );
 
         Item newItem = Item.builder()
                 .quantity(itemDto.getQuantity())
@@ -73,12 +79,12 @@ public class CartServiceImpl implements CartService {
         if (cartItems.isEmpty()) {
             cartItems.add(newItem);
         } else {
-            Long cartRestaurant = cartItems.get(0).getItemProduct().getRestaurantId();
-            Long itemRestaurant = newItem.getItemProduct().getRestaurantId();
-            if (cartRestaurant.equals(itemRestaurant)) {
+            Long cartRestaurantId = cartItems.get(0).getItemProduct().getRestaurantId();
+            Long itemRestaurantId = newItem.getItemProduct().getRestaurantId();
+            if (cartRestaurantId.equals(itemRestaurantId)) {
                 cartItems.add(newItem);
             } else {
-                throw new RuntimeException("Isn't possible to add products from different restaurants!");
+                throw new DifferentRestaurantException(cartId, cartRestaurantId, itemRestaurantId);
             }
         }
 
@@ -121,7 +127,7 @@ public class CartServiceImpl implements CartService {
 
     private void checkIfCartIsClosed(Cart cart) {
         if (cart.isClosed()) {
-            throw new RuntimeException("Cart is already closed!");
+            throw new ClosedCartException(cart.getId());
         }
     }
 
@@ -129,11 +135,11 @@ public class CartServiceImpl implements CartService {
     public Cart checkout(Long cartId) {
         Cart cart = getCartById(cartId);
         if (cart.getItens().isEmpty()) {
-            throw new RuntimeException("Empty cart! Add items to cart!");
+            throw new EmptyCartException(cartId);
         }
 
         if (cart.getPaymentMethod() == null) {
-            throw new RuntimeException("Set a payment method before closing the cart!");
+            throw new PaymentMethodNotDefinedException(cartId);
         }
 
         cart.setClosed(true);

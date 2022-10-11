@@ -1,5 +1,6 @@
 package br.com.rgrmra.ifoodDevweek.service.impl;
 
+import br.com.rgrmra.ifoodDevweek.exception.ClientNotFoundException;
 import br.com.rgrmra.ifoodDevweek.model.Client;
 import br.com.rgrmra.ifoodDevweek.model.Address;
 import br.com.rgrmra.ifoodDevweek.model.Cart;
@@ -36,7 +37,7 @@ public class ClientServiceImpl implements ClientService {
     public Client getClientById(Long id) {
         return clientRepository.findById(id).orElseThrow(
                 () -> {
-                    throw new RuntimeException("Client doesn't exist!");
+                    throw new ClientNotFoundException(id);
                 }
         );
     }

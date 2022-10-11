@@ -1,5 +1,6 @@
 package br.com.rgrmra.ifoodDevweek.service.impl;
 
+import br.com.rgrmra.ifoodDevweek.exception.RestaurantNotFoundException;
 import br.com.rgrmra.ifoodDevweek.model.Address;
 import br.com.rgrmra.ifoodDevweek.model.Product;
 import br.com.rgrmra.ifoodDevweek.model.Restaurant;
@@ -33,10 +34,10 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant getRestaurantById(Long id) {
-        return restaurantRepository.findById(id).orElseThrow(
+    public Restaurant getRestaurantById(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId).orElseThrow(
                 () -> {
-                    throw new RuntimeException("Restaurant doesn't exist!");
+                    throw new RestaurantNotFoundException(restaurantId);
                 }
         );
     }
