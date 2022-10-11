@@ -19,8 +19,8 @@ public class RestaurantResource {
     private final RestaurantService restaurantService;
 
     @GetMapping
-    public List<Restaurant> listRestaurants() {
-        return restaurantService.listRestaurants();
+    public List<Restaurant> getAllRestaurants() {
+        return restaurantService.getAllRestaurants();
     }
 
     @PostMapping()
@@ -31,16 +31,6 @@ public class RestaurantResource {
     @GetMapping("/{id}")
     public Restaurant getRestaurantById(@PathVariable("id") Long id) {
         return restaurantService.getRestaurantById(id);
-    }
-
-    @GetMapping("/{id}/name")
-    public String getRestaurantNameById(@PathVariable("id") Long id) {
-        return restaurantService.getRestaurantNameById(id);
-    }
-
-    @GetMapping("/{id}/address")
-    public Address getRestaurantAddressById(@PathVariable("id") Long id) {
-        return restaurantService.getRestaurantAddressById(id);
     }
 
     @GetMapping("/search/{name}")
@@ -56,16 +46,6 @@ public class RestaurantResource {
     @PutMapping("/{id}")
     public Restaurant updateRestaurant(@PathVariable("id") Long id, @RequestBody RestaurantDto restaurantDto) {
         return restaurantService.updateRestaurant(id, restaurantDto);
-    }
-
-    @PatchMapping("/{id}/name")
-    public Restaurant updateRestaurantName(@PathVariable("id") Long id, @RequestBody String name) {
-        return restaurantService.updateRestaurantName(id, name);
-    }
-
-    @PatchMapping("/{id}/address")
-    public Restaurant updateRestaurantAddress(@PathVariable("id") Long id, @RequestBody Address address) {
-        return restaurantService.updateRestaurantAddress(id, address);
     }
 
     @DeleteMapping("/{id}")

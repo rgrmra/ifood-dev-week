@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface CartService {
 
-    List<Cart> listCarts();
-    Cart addCart(Long clienteId);
+    List<Cart> getAllCarts();
+    Cart addCart(Long clientId);
     Cart getCartById(Long id);
-    List<Cart> getCartsByClientId(Long clienteId);
+    List<Cart> getCartsByClientId(Long clientId);
     Item addItemInCart(Long id, ItemDto itemDto);
-    Cart deleteItemInCart(Long sacolaId, Long itemId);
+    Cart deleteItemInCart(Long cartId, Long itemId);
     Cart setCartPaymentMethod(Long id, PaymentMethod paymentMethod);
     Cart checkout(Long id);
     void deleteCart(Long id);

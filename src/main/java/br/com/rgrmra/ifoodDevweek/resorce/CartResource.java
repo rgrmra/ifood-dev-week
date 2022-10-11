@@ -20,8 +20,8 @@ public class CartResource {
     private final CartService cartService;
 
     @GetMapping
-    public List<Cart> listCarts() {
-        return cartService.listCarts();
+    public List<Cart> getAllCarts() {
+        return cartService.getAllCarts();
     }
 
     @PostMapping

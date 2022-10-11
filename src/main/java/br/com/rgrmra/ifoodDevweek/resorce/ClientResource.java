@@ -19,8 +19,8 @@ public class ClientResource {
     private final ClientService clientService;
 
     @GetMapping
-    public List<Client> listClients() {
-        return clientService.listClients();
+    public List<Client> getAllClients() {
+        return clientService.getAllClients();
     }
 
     @PostMapping()
@@ -33,29 +33,9 @@ public class ClientResource {
         return clientService.getClientById(id);
     }
 
-    @GetMapping("/{id}/name")
-    public String getClientNameById(@PathVariable("id") Long id) {
-        return clientService.getClientNameById(id);
-    }
-
-    @GetMapping("/{id}/address")
-    public Address getClientAddressById(@PathVariable("id") Long id) {
-        return clientService.getClientAddressById(id);
-    }
-
     @PutMapping("/{id}")
     public Client updateClient(@PathVariable("id") Long id, @RequestBody ClientDto clientDto) {
         return clientService.updateClient(id, clientDto);
-    }
-
-    @PatchMapping("/{id}/name")
-    public Client updateClientName(@PathVariable("id") Long id, @RequestParam String name) {
-        return clientService.updateClientName(id, name);
-    }
-
-    @PatchMapping("/{id}/address")
-    public Client updateClientAddress(@PathVariable("id") Long id, @RequestBody Address address) {
-        return clientService.updateClientAddress(id, address);
     }
 
     @DeleteMapping("/{id}")

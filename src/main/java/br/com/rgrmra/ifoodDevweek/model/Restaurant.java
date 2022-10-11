@@ -1,5 +1,6 @@
 package br.com.rgrmra.ifoodDevweek.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class Restaurant {
     @SequenceGenerator(name = "RestaurantId", sequenceName = "RESTAURANT_ID")
     private long id;
     private String name;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private List<Product> products;
     @Embedded

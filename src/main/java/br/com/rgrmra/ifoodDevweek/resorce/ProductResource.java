@@ -1,14 +1,12 @@
 package br.com.rgrmra.ifoodDevweek.resorce;
 
 import br.com.rgrmra.ifoodDevweek.model.Product;
-import br.com.rgrmra.ifoodDevweek.model.Restaurant;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ProductDto;
 import br.com.rgrmra.ifoodDevweek.service.ProductService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Api(value="/ifood-dev-week/products")
@@ -20,7 +18,7 @@ public class ProductResource {
 
     @GetMapping
     public List<Product> listProducts() {
-        return productService.listProducts();
+        return productService.getAllProducts();
     }
 
     @PostMapping()
@@ -33,26 +31,6 @@ public class ProductResource {
         return productService.getProductById(id);
     }
 
-    @GetMapping("/{id}/name")
-    public String getProductNameById(@PathVariable("id") Long id) {
-        return productService.getProductNameById(id);
-    }
-
-    @GetMapping("/{id}/price")
-    public BigDecimal getProductPriceById(@PathVariable("id") Long id) {
-        return productService.getProductPriceById(id);
-    }
-
-    @GetMapping("/{id}/availability")
-    public boolean getProductAvailabilityById(@PathVariable("id") Long id) {
-        return productService.getProductAvailabilityById(id);
-    }
-
-    @GetMapping("/{id}/restaurant")
-    public Restaurant getProductRestaurantById(@PathVariable("id") Long id) {
-        return productService.getProductRestaurantById(id);
-    }
-
     @GetMapping("/search/{name}")
     public List<Product> searchProducts(@PathVariable("name") String nome) {
         return productService.searchProductByName(nome);
@@ -61,26 +39,6 @@ public class ProductResource {
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
         return productService.updateProduct(id, productDto);
-    }
-
-    @PatchMapping("/{id}/name")
-    public Product updateProductName(@PathVariable("id") Long id, @RequestParam String name) {
-        return productService.updateProductName(id, name);
-    }
-
-    @PatchMapping("/{id}/price")
-    public Product updateProductPrice(@PathVariable("id") Long id, @RequestParam BigDecimal price) {
-        return productService.updateProductPrice(id, price);
-    }
-
-    @PatchMapping("/{id}/availability")
-    public Product updateProductAvailability(@PathVariable("id") Long id, @RequestParam boolean available) {
-        return productService.updateProductAvailability(id, available);
-    }
-
-    @PatchMapping("/{id}/restaurant")
-    public Product updateProductRestaurant(@PathVariable("id") Long id, @RequestParam Long restaurantId) {
-        return productService.updateProductRestaurant(id, restaurantId);
     }
 
     @DeleteMapping("/{id}")

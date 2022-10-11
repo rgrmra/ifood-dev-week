@@ -16,44 +16,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final ProdutRepository produtRepository;
+    private final ProdutRepository productRepository;
     private final RestaurantRepository restaurantRepository;
 
     @Override
-    public List<Product> listProducts() {
-        return produtRepository.findAll();
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Override
     public Product addProduct(ProductDto productDto) {
-        return updateRestaurantList(produtRepository.save(Product.builder()
+        return updateRestaurantList(productRepository.save(Product.builder()
                 .name(productDto.getName())
                 .price(new BigDecimal(String.valueOf(productDto.getPrice())))
                 .available(productDto.isAvailable())
-                .restaurant(findRestaurant(productDto.getRestaurantId()))
+                .restaurant(restaurantRepository.getReferenceById(productDto.getRestaurantId()))
                 .build()));
     }
 
     private Product updateRestaurantList(Product newProduct) {
-        Restaurant restaurant = findRestaurant(newProduct.getRestaurant().getId());
-        List<Product> productsList = produtRepository.findAll();
-        productsList.removeIf(product -> !product.getRestaurant().equals(restaurant));
+        Restaurant restaurant = restaurantRepository.getReferenceById(newProduct.getRestaurant().getId());
+        List<Product> productsList = restaurantRepository.getReferenceById(restaurant.getId()).getProducts();
+        productsList.add(newProduct);
         restaurant.setProducts(productsList);
         restaurantRepository.save(restaurant);
         return newProduct;
     }
 
-    private Restaurant findRestaurant(Long id) {
-        return restaurantRepository.findById(id).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Restaurant doesn't exist!");
-                }
-        );
-    }
-
     @Override
     public Product getProductById(Long id) {
-        return produtRepository.findById(id).orElseThrow(
+        return productRepository.findById(id).orElseThrow(
                 () -> {
                     throw new RuntimeException("Product doesn't exist!");
                 }
@@ -61,28 +53,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String getProductNameById(Long id) {
-        return getProductById(id).getName();
-    }
-
-    @Override
-    public BigDecimal getProductPriceById(Long id) {
-        return getProductById(id).getPrice();
-    }
-
-    @Override
-    public boolean getProductAvailabilityById(Long id) {
-        return getProductById(id).isAvailable();
-    }
-
-    @Override
-    public Restaurant getProductRestaurantById(Long id) {
-        return getProductById(id).getRestaurant();
-    }
-
-    @Override
     public List<Product> searchProductByName(String name) {
-        List<Product> productsList = produtRepository.findAll();
+        List<Product> productsList = productRepository.findAll();
         productsList.removeIf(product -> !product.getName().toUpperCase().contains(name.toUpperCase()));
         return productsList;
     }
@@ -90,48 +62,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Long id, ProductDto productDto) {
         Product product = getProductById(id);
-        product.setName(productDto.getName());
-        product.setPrice(productDto.getPrice());
-        product.setAvailable(productDto.isAvailable());
-        product.setRestaurant(findRestaurant(productDto.getRestaurantId()));
-        return updateRestaurantList(produtRepository.save(product));
+        if (!productDto.getName().isEmpty())
+            product.setName(productDto.getName());
+        if (!(productDto.getPrice().equals(new BigDecimal("0.0"))))
+            product.setPrice(productDto.getPrice());
+        if (productDto.isAvailable() != product.isAvailable())
+            product.setAvailable(productDto.isAvailable());
+        if(!(productDto.getRestaurantId() == 0))
+            product.setRestaurant(restaurantRepository.getReferenceById(productDto.getRestaurantId()));
+        return updateRestaurantList(productRepository.save(product));
     }
 
     @Override
-    public Product updateProductName(Long id, String name) {
-        Product product = getProductById(id);
-        product.setName(name);
-        return updateRestaurantList(produtRepository.save(product));
-    }
-
-    @Override
-    public Product updateProductPrice(Long id, BigDecimal price) {
-        Product product = getProductById(id);
-        product.setPrice(price);
-        return updateRestaurantList(produtRepository.save(product));
-    }
-
-    @Override
-    public Product updateProductAvailability(Long id, boolean available) {
-        Product product = getProductById(id);
-        product.setAvailable(available);
-        return updateRestaurantList(produtRepository.save(product));
-    }
-
-    @Override
-    public Product updateProductRestaurant(Long id, Long restaurantId) {
-        Product productNovo = getProductById(id);
-        Restaurant restaurant = findRestaurant(restaurantId);
-        restaurant.getProducts().removeIf(product -> product.equals(getProductById(id)));
+    public void deleteProduct(Long productId) {
+        Restaurant restaurant = restaurantRepository.getReferenceById(getProductById(productId).getRestaurant().getId());
+        restaurant.getProducts().removeIf(product -> (product.getId() == productId));
         restaurantRepository.save(restaurant);
-        return updateRestaurantList(produtRepository.save(productNovo));
-    }
-
-    @Override
-    public void deleteProduct(Long id) {
-        Restaurant restaurant = findRestaurant(getProductById(id).getRestaurant().getId());
-        restaurant.getProducts().removeIf(product -> (product.getId() == id));
-        restaurantRepository.save(restaurant);
-        produtRepository.deleteById(id);
+        productRepository.deleteById(productId);
     }
 }

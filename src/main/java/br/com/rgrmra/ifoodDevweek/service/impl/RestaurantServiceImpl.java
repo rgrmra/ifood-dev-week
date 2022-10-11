@@ -17,10 +17,10 @@ import java.util.List;
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final ProdutRepository produtRepository;
+    private final ProdutRepository productRepository;
 
     @Override
-    public List<Restaurant> listRestaurants() {
+    public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
 
@@ -40,20 +40,9 @@ public class RestaurantServiceImpl implements RestaurantService {
                 }
         );
     }
-
-    @Override
-    public String getRestaurantNameById(Long id) {
-        return getRestaurantById(id).getName();
-    }
-
-    @Override
-    public Address getRestaurantAddressById(Long id) {
-        return getRestaurantById(id).getAddress();
-    }
-
     @Override
     public List<Restaurant> searchRestaurant(String name) {
-        List<Restaurant> restaurantsList = restaurantRepository.findAll();
+        List<Restaurant> restaurantsList = getAllRestaurants();
         restaurantsList.removeIf(restaurant -> !restaurant.getName().toUpperCase().contains(name.toUpperCase()));
         return restaurantsList;
     }
@@ -61,22 +50,25 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public Restaurant updateRestaurant(Long id, RestaurantDto restaurantDto) {
         Restaurant restaurant = getRestaurantById(id);
-        restaurant.setName(restaurantDto.getName());
-        restaurant.setAddress(restaurantDto.getAddress());
-        return restaurantRepository.save(restaurant);
-    }
+        if (!restaurantDto.getName().isEmpty())
+            restaurant.setName(restaurantDto.getName());
 
-    @Override
-    public Restaurant updateRestaurantName(Long id, String name) {
-        Restaurant restaurant = getRestaurantById(id);
-        restaurant.setName(name);
-        return restaurantRepository.save(restaurant);
-    }
+        Address address = restaurant.getAddress();
+        if (!restaurantDto.getAddress().getAddress().isEmpty())
+            address.setAddress(restaurantDto.getAddress().getAddress());
+        if (!restaurantDto.getAddress().getSecondAddress().isEmpty())
+            address.setSecondAddress(restaurantDto.getAddress().getSecondAddress());
+        if (!restaurantDto.getAddress().getCity().isEmpty())
+            address.setCity(restaurantDto.getAddress().getCity());
+        if (!restaurantDto.getAddress().getState().isEmpty())
+            address.setState(restaurantDto.getAddress().getState());
+        if (!restaurantDto.getAddress().getZipCode().isEmpty())
+            address.setZipCode(restaurantDto.getAddress().getZipCode());
+        if (!(restaurantDto.getAddress().getNumber() == 0))
+            address.setNumber(restaurantDto.getAddress().getNumber());
+        if (!restaurant.getAddress().equals(address))
+            restaurant.setAddress(address);
 
-    @Override
-    public Restaurant updateRestaurantAddress(Long id, Address address) {
-        Restaurant restaurant = getRestaurantById(id);
-        restaurant.setAddress(address);
         return restaurantRepository.save(restaurant);
     }
 
@@ -86,10 +78,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public void deleteRestaurant(Long id) {
-        List<Product> productsList = getRestaurantProductsList(id);
-        productsList.removeIf(product -> !(product.getRestaurant().getId() == id));
-        produtRepository.deleteAll(productsList);
-        restaurantRepository.deleteById(id);
+    public void deleteRestaurant(Long restaurantId) {
+        for (Product product : getRestaurantProductsList(restaurantId)) {
+            if (product.getRestaurant().getId() == restaurantId) {
+                productRepository.deleteById(product.getId());
+            }
+        }
+        restaurantRepository.deleteById(restaurantId);
     }
 }

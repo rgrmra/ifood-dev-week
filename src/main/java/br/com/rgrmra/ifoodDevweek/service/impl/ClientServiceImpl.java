@@ -2,11 +2,9 @@ package br.com.rgrmra.ifoodDevweek.service.impl;
 
 import br.com.rgrmra.ifoodDevweek.model.Client;
 import br.com.rgrmra.ifoodDevweek.model.Address;
-import br.com.rgrmra.ifoodDevweek.model.Item;
 import br.com.rgrmra.ifoodDevweek.model.Cart;
-import br.com.rgrmra.ifoodDevweek.repository.ClientRepository;
-import br.com.rgrmra.ifoodDevweek.repository.ItemRepository;
 import br.com.rgrmra.ifoodDevweek.repository.CartRepository;
+import br.com.rgrmra.ifoodDevweek.repository.ClientRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ClientDto;
 import br.com.rgrmra.ifoodDevweek.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +18,9 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final CartRepository cartRepository;
-    private final ItemRepository itemRepository;
 
     @Override
-    public List<Client> listClients() {
+    public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
@@ -45,51 +42,37 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public String getClientNameById(Long id) {
-        return getClientById(id).getName();
-    }
-
-    @Override
-    public Address getClientAddressById(Long id) {
-        return getClientById(id).getAddress();
-    }
-
-    @Override
     public Client updateClient(Long id, ClientDto clientDto) {
         Client client = getClientById(id);
-        client.setName(clientDto.getName());
-        client.setAddress(clientDto.getAddress());
+        if (!clientDto.getName().isEmpty())
+            client.setName(clientDto.getName());
+
+        Address address = client.getAddress();
+        if (!clientDto.getAddress().getAddress().isEmpty())
+            address.setAddress(clientDto.getAddress().getAddress());
+        if (!clientDto.getAddress().getSecondAddress().isEmpty())
+            address.setSecondAddress(clientDto.getAddress().getSecondAddress());
+        if (!clientDto.getAddress().getCity().isEmpty())
+            address.setCity(clientDto.getAddress().getCity());
+        if (!clientDto.getAddress().getState().isEmpty())
+            address.setState(clientDto.getAddress().getState());
+        if (!clientDto.getAddress().getZipCode().isEmpty())
+            address.setZipCode(clientDto.getAddress().getZipCode());
+        if (!(clientDto.getAddress().getNumber() == 0))
+            address.setNumber(clientDto.getAddress().getNumber());
+        if (!client.getAddress().equals(address))
+            client.setAddress(address);
+
         return clientRepository.save(client);
     }
 
     @Override
-    public Client updateClientName(Long id, String name) {
-        Client client = getClientById(id);
-        client.setName(name);
-        return clientRepository.save(client);
-    }
-
-    @Override
-    public Client updateClientAddress(Long id, Address address) {
-        Client client = getClientById(id);
-        client.setAddress(address);
-        return clientRepository.save(client);
-    }
-
-    @Override
-    public void deleteClient(Long id) {
-        List<Cart> cartsList = cartRepository.findAll();
-        for (Cart cart : cartsList) {
-            if (cart.getClient().getId() == id) {
-                List<Item> itemsList = itemRepository.findAll();
-                cart.setItens(null);
-                cartRepository.save(cart);
-                itemsList.removeIf(item -> !(item.getCart().getId() == cart.getId()));
-                itemRepository.deleteAll(itemsList);
+    public void deleteClient(Long clientId) {
+        for (Cart cart : cartRepository.findAll()) {
+            if (cart.getClient().getId() == clientId) {
+                cartRepository.deleteById(cart.getId());
             }
         }
-        cartsList.removeIf(cart -> !(cart.getClient().getId() == id));
-        cartRepository.deleteAll(cartsList);
-        clientRepository.delete(getClientById(id));
+        clientRepository.delete(getClientById(clientId));
     }
 }

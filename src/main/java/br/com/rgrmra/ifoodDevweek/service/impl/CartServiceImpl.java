@@ -5,6 +5,8 @@ import br.com.rgrmra.ifoodDevweek.model.*;
 import br.com.rgrmra.ifoodDevweek.repository.ClientRepository;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutRepository;
 import br.com.rgrmra.ifoodDevweek.repository.CartRepository;
+import br.com.rgrmra.ifoodDevweek.resorce.ClientResource;
+import br.com.rgrmra.ifoodDevweek.resorce.ProductResource;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ItemDto;
 import br.com.rgrmra.ifoodDevweek.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +25,15 @@ public class CartServiceImpl implements CartService {
     private final ClientRepository clientRepository;
 
     @Override
-    public List<Cart> listCarts() {
+    public List<Cart> getAllCarts() {
         return cartRepository.findAll();
     }
 
     @Override
     public Cart addCart(Long clientId) {
         return cartRepository.save(Cart.builder()
-                .client(clientRepository.findById(clientId).orElseThrow(
-                        () -> {
-                            throw new RuntimeException("Client doesn't exist!");
-                        }
-                )).build());
+                .client(clientRepository.getReferenceById(clientId))
+                .build());
     }
 
     @Override
@@ -58,18 +57,14 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartById(id);
         checkIfCartIsClosed(cart);
 
-        Product product = produtRepository.findById(itemDto.getProdutId()).orElseThrow(
-                () -> {
-                    throw new RuntimeException("Product doesn't exist!");
-                }
-        );
+        Product product = produtRepository.getReferenceById(itemDto.getProdutId());
 
         Item newItem = Item.builder()
                 .quantity(itemDto.getQuantity())
                 .cart(cart)
                 .itemProduct(ItemProduct.builder()
                         .nome(product.getName())
-                        .price(product.getPrice())
+                        .price(new BigDecimal(String.valueOf(product.getPrice())))
                         .restaurantId(product.getRestaurant().getId())
                         .build())
                 .build();
