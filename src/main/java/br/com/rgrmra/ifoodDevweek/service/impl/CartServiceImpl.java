@@ -59,11 +59,14 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartById(cartId);
         checkIfCartIsClosed(cart);
 
-        Product product = productRepository.findById(itemDto.getProdutId()).orElseThrow(
+        Product product = productRepository.findById(itemDto.getProductId()).orElseThrow(
                 () -> {
-                    throw new ProductNotFoundException(itemDto.getProdutId());
+                    throw new ProductNotFoundException(itemDto.getProductId());
                 }
         );
+
+        if (!product.isAvailable())
+            throw new ProductNotAvailableException(cartId, product.getId());
 
         Item newItem = Item.builder()
                 .quantity(itemDto.getQuantity())

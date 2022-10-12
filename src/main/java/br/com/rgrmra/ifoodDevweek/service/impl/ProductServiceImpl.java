@@ -76,16 +76,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, ProductDto productDto) {
-        Product product = getProductById(id);
+    public Product updateProduct(Long productId, ProductDto productDto) {
+        Product product = getProductById(productId);
         if (!productDto.getName().isEmpty())
             product.setName(productDto.getName());
         if (!(productDto.getPrice().equals(new BigDecimal("0.0"))))
             product.setPrice(productDto.getPrice());
         if (productDto.isAvailable() != product.isAvailable())
             product.setAvailable(productDto.isAvailable());
-        if(!(productDto.getRestaurantId() == 0))
+        if(!(productDto.getRestaurantId() == 0)) {
+            Restaurant restaurant = getRestaurantById(getProductById(productId).getRestaurant().getId());
+            restaurant.getProducts().removeIf(productRestaurant -> (productRestaurant.getId() == productId));
+            restaurantRepository.save(restaurant);
             product.setRestaurant(getRestaurantById(productDto.getRestaurantId()));
+        }
         return updateRestaurantList(productRepository.save(product));
     }
 

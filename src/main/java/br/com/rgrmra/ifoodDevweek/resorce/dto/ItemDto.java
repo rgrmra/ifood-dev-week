@@ -11,6 +11,6 @@ import javax.persistence.Embeddable;
 @Setter
 @Embeddable
 public class ItemDto {
-    private long produtId;
+    private long productId;
     private int quantity;
 }
