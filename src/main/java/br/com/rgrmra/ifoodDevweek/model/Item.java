@@ -20,7 +20,4 @@ public class Item {
     private long id;
     private ItemProduct itemProduct;
     private int quantity;
-    @ManyToOne
-    @JsonIgnore
-    private Cart cart;
 }

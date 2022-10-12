@@ -4,6 +4,7 @@ import br.com.rgrmra.ifoodDevweek.enumeration.PaymentMethod;
 import br.com.rgrmra.ifoodDevweek.exception.*;
 import br.com.rgrmra.ifoodDevweek.model.*;
 import br.com.rgrmra.ifoodDevweek.repository.ClientRepository;
+import br.com.rgrmra.ifoodDevweek.repository.ItemRepository;
 import br.com.rgrmra.ifoodDevweek.repository.ProdutRepository;
 import br.com.rgrmra.ifoodDevweek.repository.CartRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ItemDto;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +23,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final ProdutRepository productRepository;
     private final ClientRepository clientRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public List<Cart> getAllCarts() {
@@ -70,7 +73,6 @@ public class CartServiceImpl implements CartService {
 
         Item newItem = Item.builder()
                 .quantity(itemDto.getQuantity())
-                .cart(cart)
                 .itemProduct(ItemProduct.builder()
                         .nome(product.getName())
                         .price(new BigDecimal(String.valueOf(product.getPrice())))
@@ -78,7 +80,7 @@ public class CartServiceImpl implements CartService {
                         .build())
                 .build();
 
-        List<Item> cartItems = cart.getItens();
+        List<Item> cartItems = cart.getItems();
         if (cartItems.isEmpty()) {
             cartItems.add(newItem);
         } else {
@@ -113,9 +115,9 @@ public class CartServiceImpl implements CartService {
     public Cart deleteItemInCart(Long cartId, Long itemId) {
         Cart cart = getCartById(cartId);
         checkIfCartIsClosed(cart);
-        List<Item> itemsList = cart.getItens();
+        List<Item> itemsList = cart.getItems();
         itemsList.removeIf(item -> (item.getId() == itemId));
-        cart.setItens(itemsList);
+        cart.setItems(itemsList);
         cart.setFinalPrice(updateCartPrice(itemsList));
         return cartRepository.save(cart);
     }
@@ -137,7 +139,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart checkout(Long cartId) {
         Cart cart = getCartById(cartId);
-        if (cart.getItens().isEmpty()) {
+        if (cart.getItems().isEmpty()) {
             throw new EmptyCartException(cartId);
         }
 
@@ -151,7 +153,18 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteCart(Long id) {
-        cartRepository.delete(getCartById(id));
+    public void deleteCart(Long cartId) {
+        List<Cart> cartsList = cartRepository.findAll();
+        cartsList.removeIf(cartToDelete -> !(cartToDelete.getClient().getId() == getCartById(cartId).getClient().getId()));
+
+        for (Cart cart : cartsList) {
+            cart.setItems(new ArrayList<>());
+            cartRepository.save(cart);
+            for (Item item : cart.getItems()) {
+                itemRepository.delete(item);
+            }
+        }
+
+        cartRepository.delete(getCartById(cartId));
     }
 }

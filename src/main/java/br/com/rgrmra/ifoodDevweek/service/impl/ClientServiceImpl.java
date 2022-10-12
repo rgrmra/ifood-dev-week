@@ -4,13 +4,16 @@ import br.com.rgrmra.ifoodDevweek.exception.ClientNotFoundException;
 import br.com.rgrmra.ifoodDevweek.model.Client;
 import br.com.rgrmra.ifoodDevweek.model.Address;
 import br.com.rgrmra.ifoodDevweek.model.Cart;
+import br.com.rgrmra.ifoodDevweek.model.Item;
 import br.com.rgrmra.ifoodDevweek.repository.CartRepository;
 import br.com.rgrmra.ifoodDevweek.repository.ClientRepository;
+import br.com.rgrmra.ifoodDevweek.repository.ItemRepository;
 import br.com.rgrmra.ifoodDevweek.resorce.dto.ClientDto;
 import br.com.rgrmra.ifoodDevweek.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,6 +22,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final CartRepository cartRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public List<Client> getAllClients() {
@@ -69,11 +73,18 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void deleteClient(Long clientId) {
-        for (Cart cart : cartRepository.findAll()) {
-            if (cart.getClient().getId() == clientId) {
-                cartRepository.deleteById(cart.getId());
+        List<Cart> cartsList = cartRepository.findAll();
+        cartsList.removeIf(cartToDelete -> !(cartToDelete.getClient().getId() == clientId));
+
+        for (Cart cart : cartsList) {
+            cart.setItems(new ArrayList<>());
+            cartRepository.save(cart);
+            for (Item item : cart.getItems()) {
+                itemRepository.delete(item);
             }
         }
+
+        cartRepository.deleteAll(cartsList);
         clientRepository.delete(getClientById(clientId));
     }
 }

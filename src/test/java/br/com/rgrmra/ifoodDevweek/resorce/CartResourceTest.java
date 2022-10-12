@@ -196,4 +196,67 @@ public class CartResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
+    /* ERASING DATABASE */
+
+    @Order(16)
+    @Test
+    public void whenDeleteSecondClientThenReturnsOk() {
+        RestAssured.given()
+                .when()
+                .delete("/ifood-dev-week/clients/2")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Order(17)
+    @Test
+    public void whenGetSecondClientThenReturnsNotFound() {
+        RestAssured.given()
+                .when()
+                .get("/ifood-dev-week/clients/2")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Order(18)
+    @Test
+    public void whenDeleteSecondRestaurantThenReturnsOk() {
+        RestAssured.given()
+                .when()
+                .delete("/ifood-dev-week/restaurants/2")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+
+    @Order(19)
+    @Test
+    public void whenGetSecondRestaurantThenReturnsNotFound() {
+        RestAssured.given()
+                .when()
+                .get("/ifood-dev-week/restaurants/2")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Order(20)
+    @Test
+    public void whenGetSecondProductThenReturnsNotFound() {
+        RestAssured.given()
+                .when()
+                .get("/ifood-dev-week/products/2")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Order(21)
+    @Test
+    public void whenGetSecondCartThenReturnsNotFound() {
+        RestAssured.given()
+                .when()
+                .get("/ifood-dev-week/carts/2")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
 }

@@ -1,9 +1,6 @@
 package br.com.rgrmra.ifoodDevweek.resorce;
 
-import org.junit.jupiter.api.ClassOrderer;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestClassOrder;
+import org.junit.jupiter.api.*;
 
 @Order(1)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
@@ -32,4 +29,5 @@ public class OrderedNestedTests {
     class OrderCartResourceTest extends CartResourceTest {
         // @Test methods ...
     }
+
 }

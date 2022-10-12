@@ -21,11 +21,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CartId")
     @SequenceGenerator(name = "CartId", sequenceName = "CART_ID")
     private long id;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JsonIgnore
     private Client client;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Item> itens;
+    private List<Item> items;
     private BigDecimal finalPrice;
     @Enumerated
     private PaymentMethod paymentMethod;
