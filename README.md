@@ -2,4 +2,7 @@
 API to manage a delivery application.  
 This application contains the basic functionalities, however, necessary for the operation of a delivery application.
 
-It's possible to add clients and restaurants, add products to a restaurant and add a cart for a client and manage products in the cart.
+It's possible to add clients and restaurants, add products to a restaurant and add a cart for a client and manage products in the cart.  
+  
+  
+![Swagger Content](http://rgrmra.com.br/library/img/ifood-dev-week-swagger.png)
